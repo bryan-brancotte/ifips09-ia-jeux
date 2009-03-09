@@ -1,8 +1,11 @@
 package surface;
 
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.Iterator;
+import java.util.Vector;
+
 import utils.Vector2d;
-import java.util.*;
-import java.awt.*;
 
 /**
  * A simple class to handle the surface itself. All objects are polylines.
@@ -41,7 +44,10 @@ public class Surface {
 		this.wxsize = wxsize;
 		this.wysize = wysize;
 		objects = new Vector<PolylineObject>();
+		lab();
+	}
 
+	protected void firstSurface() {
 		PolylineObject ob;
 
 		ob = new PolylineObject(new Vector2d(100F, 200F), this);
@@ -146,7 +152,7 @@ public class Surface {
 		ob.addNode(new Vector2d(596F, 412F));
 		ob.fixObject();
 		objects.add(ob);
-		
+
 		ob = new PolylineObject(this);
 		ob.addNode(new Vector2d(623F, 562F));
 		ob.addNode(new Vector2d(726F, 393F));
@@ -166,6 +172,215 @@ public class Surface {
 		// ob = new PolylineObject(this);
 		// ob.fixObject();
 		// objects.add(ob);
+	}
+
+	protected void lab() {
+		PolylineObject ob;
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(115F, 311F));
+		ob.addNode(new Vector2d(105F, 600F));
+		ob.addNode(new Vector2d(139F, 600F));
+		ob.addNode(new Vector2d(140F, 348F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(172F, 282F));
+		ob.addNode(new Vector2d(211F, 238F));
+		ob.addNode(new Vector2d(253F, 272F));
+		ob.addNode(new Vector2d(217F, 328F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(285F, 225F));
+		ob.addNode(new Vector2d(278F, 0F));
+		ob.addNode(new Vector2d(324F, 0F));
+		ob.addNode(new Vector2d(319F, 266F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(326F, 332F));
+		ob.addNode(new Vector2d(336F, 580F));
+		ob.addNode(new Vector2d(297F, 570F));
+		ob.addNode(new Vector2d(284F, 348F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(376F, 050F));
+		ob.addNode(new Vector2d(376F, 453F));
+		ob.addNode(new Vector2d(401F, 453F));
+		ob.addNode(new Vector2d(401F, 050F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(451F, 0F));
+		ob.addNode(new Vector2d(458F, 281F));
+		ob.addNode(new Vector2d(508F, 282F));
+		ob.addNode(new Vector2d(501F, 0F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(511F, 346F));
+		ob.addNode(new Vector2d(509F, 600F));
+		ob.addNode(new Vector2d(459F, 600F));
+		ob.addNode(new Vector2d(467F, 336F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(544F, 63F));
+		ob.addNode(new Vector2d(548F, 432F));
+		ob.addNode(new Vector2d(636F, 343F));
+		ob.addNode(new Vector2d(632F, 187F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(683F, 47F));
+		ob.addNode(new Vector2d(673F, 156F));
+		ob.addNode(new Vector2d(710F, 153F));
+		ob.addNode(new Vector2d(713F, 47F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(758F, 179F));
+		ob.addNode(new Vector2d(751F, 337F));
+		ob.addNode(new Vector2d(773F, 337F));
+		ob.addNode(new Vector2d(777F, 184F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(677F, 296F));
+		ob.addNode(new Vector2d(662F, 513F));
+		ob.addNode(new Vector2d(701F, 513F));
+		ob.addNode(new Vector2d(701F, 312F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(755F, 494F));
+		ob.addNode(new Vector2d(689F, 557F));
+		ob.addNode(new Vector2d(712F, 565F));
+		ob.addNode(new Vector2d(767F, 506F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(619F, 494F));
+		ob.addNode(new Vector2d(617F, 577F));
+		ob.addNode(new Vector2d(586F, 577F));
+		ob.addNode(new Vector2d(596F, 489F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(599F, 411F));
+		ob.addNode(new Vector2d(542F, 487F));
+		ob.addNode(new Vector2d(557F, 495F));
+		ob.addNode(new Vector2d(609F, 436F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(708F, 203F));
+		ob.addNode(new Vector2d(662F, 243F));
+		ob.addNode(new Vector2d(681F, 273F));
+		ob.addNode(new Vector2d(731F, 213F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(718F, 198F));
+		ob.addNode(new Vector2d(647F, 240F));
+		ob.addNode(new Vector2d(666F, 260F));
+		ob.addNode(new Vector2d(719F, 225F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(708F, 203F));
+		ob.addNode(new Vector2d(662F, 243F));
+		ob.addNode(new Vector2d(681F, 273F));
+		ob.addNode(new Vector2d(731F, 213F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(171F, 448F));
+		ob.addNode(new Vector2d(221F, 356F));
+		ob.addNode(new Vector2d(248F, 367F));
+		ob.addNode(new Vector2d(182F, 449F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(185F, 197F));
+		ob.addNode(new Vector2d(244F, 111F));
+		ob.addNode(new Vector2d(250F, 157F));
+		ob.addNode(new Vector2d(190F, 226F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(118F, 38F));
+		ob.addNode(new Vector2d(16F, 186F));
+		ob.addNode(new Vector2d(40F, 220F));
+		ob.addNode(new Vector2d(147F, 60F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(208F, 30F));
+		ob.addNode(new Vector2d(185F, 133F));
+		ob.addNode(new Vector2d(233F, 31F));
+		;
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(43F, 336F));
+		ob.addNode(new Vector2d(19F, 493F));
+		ob.addNode(new Vector2d(68F, 415F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(151F, 245F));
+		ob.addNode(new Vector2d(95F, 208F));
+		ob.addNode(new Vector2d(132F, 279F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(62F, 249F));
+		ob.addNode(new Vector2d(46F, 322F));
+		ob.addNode(new Vector2d(94F, 301F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(461F, 306F));
+		ob.addNode(new Vector2d(424F, 281F));
+		ob.addNode(new Vector2d(424F, 346F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(260F, 530F));
+		ob.addNode(new Vector2d(170F, 535F));
+		ob.addNode(new Vector2d(216F, 562F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
 	}
 
 	/**

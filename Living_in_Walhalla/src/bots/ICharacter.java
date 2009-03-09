@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-
 import utils.Vector2d;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
@@ -15,7 +14,7 @@ import applets.BattleField;
 
 public abstract class ICharacter implements IMover {
 
-	public static int MAX_DST = 50;
+	public static int MAX_DST = 100;
 	protected AStarMultiThread aStar;
 
 	protected BattleField battleField;
@@ -59,11 +58,11 @@ public abstract class ICharacter implements IMover {
 	public abstract void drawCharacter(Graphics g);
 
 	public void draw(Graphics g) {
-//		nodesLocker.acquireUninterruptibly();
-//		for (Node n : nodes) {
-//			g.drawOval((int) n.x - 2, (int) (n.y - 2), 4, 4);
-//		}
-//		nodesLocker.release();
+		nodesLocker.acquireUninterruptibly();
+		for (Node n : nodes) {
+			g.drawOval((int) n.x - 2, (int) (n.y - 2), 4, 4);
+		}
+		nodesLocker.release();
 		drawCharacter(g);
 	}
 
@@ -190,10 +189,13 @@ public abstract class ICharacter implements IMover {
 				node = n;
 				cost = costTmp;
 			}
-			if (costTmp > MAX_DST || !battleField.surface.canSee(coord, n))
+			if (costTmp > MAX_DST || !battleField.surface.canSee(coord, n)) {
 				nodesBuffer.add(n);
-			// else
-			// System.out.println(costTmp);
+				n.setInfluence(this, 0);
+			} else {
+				costTmp -= MAX_DST;
+				n.setInfluence(this, -costTmp);
+			}
 		}
 		for (Node n : nodesBuffer)
 			nodes.remove(n);

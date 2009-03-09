@@ -11,6 +11,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 
+import com.sun.org.apache.bcel.internal.generic.CPInstruction;
+
 import surface.Surface;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -60,6 +62,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	protected boolean DRAW_PATH = true;
 	protected boolean DRAW_WAYPOINT = false;
 	protected boolean DRAW_CONTROL_MAP = true;
+	protected boolean LEVEL_CREATING = true;
+	protected int levelCreatingCpt = 0;
 
 	protected MoverManager moverManager;
 
@@ -182,11 +186,11 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		perso2 = new Personnage(this, aStar, Color.blue, "Bryan", teamBlue);
 		perso.setDestination(waypoints[100]);
 		perso2.setDestination(waypoints[300]);
-		moverManager = new MoverManager(30, 5);
+		moverManager = new MoverManager(50, 5);
 		moverManager.start();
 		moverManager.addMovers(perso);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 2; i++) {
 			moverManager.addMovers(im = new Cow(this, aStar, waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
@@ -326,7 +330,16 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			else
 				perso2.setDestination(pointDestination);
 		}
-		System.out.println("ob.addNode(new Vector2d(" + e.getX() + "F, " + e.getY() + "F));");
+		if (LEVEL_CREATING) {
+			System.out.println("ob.addNode(new Vector2d(" + e.getX() + "F, " + e.getY() + "F));");
+			if (++levelCreatingCpt == 3) {
+				levelCreatingCpt = 0;
+				System.out.println("ob.fixObject();");
+				System.out.println("objects.add(ob);");
+				System.out.println();
+				System.out.println("ob = new PolylineObject(this);");
+			}
+		}
 	}
 
 	/*

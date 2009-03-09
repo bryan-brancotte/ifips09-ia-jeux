@@ -2,6 +2,7 @@ package aStar2D;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.concurrent.Semaphore;
 
 import bots.IMover;
 import utils.LIFO;
@@ -13,6 +14,7 @@ public class Node extends Vector2d {
 	protected static LIFO<Node> world;
 
 	protected HashMap<IMover, Float> influentials;
+	protected Semaphore influentialsLocker = new Semaphore(1);
 
 	public class Link {
 		protected float cost;
@@ -52,6 +54,15 @@ public class Node extends Vector2d {
 
 	public Node() {
 		super();
+		init();
+	}
+
+	public Node(float x, float y) {
+		super(x + 0.1F, y + 0.1F);
+		init();
+	}
+
+	private void init() {
 		if (world == null)
 			world = new LIFO<Node>();
 		influentials = new HashMap<IMover, Float>();
@@ -60,14 +71,13 @@ public class Node extends Vector2d {
 		this.neighbor = new LIFO<Link>();
 	}
 
-	public Node(float x, float y) {
-		super(x + 0.1F, y + 0.1F);
-		if (world == null)
-			world = new LIFO<Node>();
-		influentials = new HashMap<IMover, Float>();
-		world.add(this);
-		this.previous = new Link();
-		this.neighbor = new LIFO<Link>();
+	public void setInfluence(IMover mover, float influence) {
+		influentialsLocker.acquireUninterruptibly();
+		if (influence == 0)
+			influentials.remove(mover);
+		else
+			influentials.put(mover, influence);
+		influentialsLocker.release();
 	}
 
 	public static void resetTmpInfo() {
@@ -142,12 +152,14 @@ public class Node extends Vector2d {
 
 	public float getOverCost(IMover forWho) {
 		float oc = 0F;
+		influentialsLocker.acquireUninterruptibly();
 		for (Entry<IMover, Float> e : influentials.entrySet()) {
 			if (e.getKey().getTeam().isOpposedTo(forWho.getTeam()))
 				oc += e.getValue();
-			else
-				oc -= e.getValue();
+			else if (forWho != e.getKey())
+				oc -= 5;
 		}
+		influentialsLocker.release();
 		return oc;
 	}
 
