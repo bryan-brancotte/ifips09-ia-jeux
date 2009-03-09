@@ -2,9 +2,10 @@ package aStar2D;
 
 import java.util.concurrent.Semaphore;
 
+import life.IMover;
+
 import utils.LIFO_Pool;
 import utils.LIFO_Pool.Iterator;
-import bots.IMover;
 
 public class AStarJob {
 

@@ -4,8 +4,9 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
-import bots.IMover;
-import bots.ITeam;
+import life.IMover;
+import life.ITeam;
+
 import utils.LIFO;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
