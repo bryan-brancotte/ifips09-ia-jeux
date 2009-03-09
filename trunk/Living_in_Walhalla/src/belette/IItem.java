@@ -1,11 +1,12 @@
 package belette;
 
-import bots.*;
 import utils.*;
 
 import java.awt.*;
+
+import life.*;
 /**
- * Interface (a modifier suivant vos envies) permettant de grer les items dans le jeu
+ * Interface (a modifier suivant vos envies) permettant de gï¿½rer les items dans le jeu
  * 
  * @author L. Simon, Univ. Paris Sud, 2008
  *
@@ -23,29 +24,29 @@ public interface IItem {
 	public void setRespawnTime(int frames); 
 
 	/**
-	 * Ajoute des coordonnes possibles pour apparaitre sur la carte
-	 * aprs getRespawnTime() secondes une fois rcupr
+	 * Ajoute des coordonnï¿½es possibles pour apparaitre sur la carte
+	 * aprï¿½s getRespawnTime() secondes une fois rï¿½cupï¿½rï¿½
 	 * @param x
 	 * @param y
 	 */
 	public void addCoordRespawn(int x, int y);
 	
 	/**
-	 * @return Les coordonnes de l'item, ou -1,-1 si pas sur la carte par ex.
+	 * @return Les coordonnï¿½es de l'item, ou -1,-1 si pas sur la carte par ex.
 	 */
 	public Vector2d getCoord();
 	
 	/**
-	 * On va reprsenter les item en rond... Pour les collisions sur la carte,
+	 * On va reprï¿½senter les item en rond... Pour les collisions sur la carte,
 	 * on a besoin du rayon de l'item
-	 * @return le rayon (en coordonnes de cartes) de l'item
+	 * @return le rayon (en coordonnï¿½es de cartes) de l'item
 	 */
 	public float itemRadius();
 	
 	/**
-	 * Permet d'appeler les fonctions adquates pour modifier le bot
-	 * Vous pouvez le modifier pour appeler cette fonction ˆ l'envers,
-	 * depuis bot avec une mthode captureItem(IItem item) dans bot...
+	 * Permet d'appeler les fonctions adï¿½quates pour modifier le bot
+	 * Vous pouvez le modifier pour appeler cette fonction ï¿½ l'envers,
+	 * depuis bot avec une mï¿½thode captureItem(IItem item) dans bot...
 	 * A vous de voir...
 	 * Il faut lancer un timer pour faire renaitre l'item au bout d'un certain temps...
 	 * @param bot
@@ -53,7 +54,7 @@ public interface IItem {
 	public void capturedByBot(IBot bot);
 	
 	/**
-	 * Affiche l'item sur le dessin... A vos ides !
+	 * Affiche l'item sur le dessin... A vos idï¿½es !
 	 * @param g
 	 */
 	public void draw(Graphics g);
@@ -64,7 +65,7 @@ public interface IItem {
 	public String toString();
 	
 	/**
-	 * Mise ˆ jour ventuelle aprs chaque frame (Rcupr ? disparaitre ? Apparaitre ? Dgrader ?)
+	 * Mise ï¿½ jour ï¿½ventuelle aprï¿½s chaque frame (Rï¿½cupï¿½rï¿½ ? disparaitre ? Apparaitre ? Dï¿½grader ?)
 	 */
 	public void computeNextFrame();
 	

@@ -1,13 +1,14 @@
 package belette;
 
-import bots.*;
 import utils.*;
 
 import java.awt.*;
 
+import life.*;
+
 /**
- * Interface pour donner une ide de ce que l'on peut mettre
- * pour grer les balles
+ * Interface pour donner une idï¿½e de ce que l'on peut mettre
+ * pour gï¿½rer les balles
  * 
  * @author L. Simon, Univ. Paris Sud, 2008
  *
@@ -15,7 +16,7 @@ import java.awt.*;
 public interface IBelette {
 
 	/**
-	 * @return le bot qui a tir cette balle
+	 * @return le bot qui a tirï¿½ cette balle
 	 */
 	public IBot firedBy();
 	
@@ -30,7 +31,7 @@ public interface IBelette {
 	public float getPower();
 	
 	/**
-	 * @return les coordonnes de la balle
+	 * @return les coordonnï¿½es de la balle
 	 */
 	public Vector2d getCoords();
 	
@@ -40,29 +41,29 @@ public interface IBelette {
 	public float getRadius();
 	
 	/**
-	 * Permet de rendre compte des dgats sur le bot qui est touch
-	 * Suivant votre modlisation des bots, vous pouvez la remplacer
-	 * par une mthode IBot.hitBy(IBelette balle) dans les bots... A vous
+	 * Permet de rendre compte des dï¿½gats sur le bot qui est touchï¿½
+	 * Suivant votre modï¿½lisation des bots, vous pouvez la remplacer
+	 * par une mï¿½thode IBot.hitBy(IBelette balle) dans les bots... A vous
 	 * de voir...
 	 * @param bot
 	 */
 	public void hitBot(IBot bot);
 	
 	/**
-	 * Juste pour dire, au cas o vous vouliez grer d'ventuelles explosions
-	 * @param impactCoords coordonnes de l'impact
+	 * Juste pour dire, au cas oï¿½ vous vouliez gï¿½rer d'ï¿½ventuelles explosions
+	 * @param impactCoords coordonnï¿½es de l'impact
 	 */
 	public void hitWall(Vector2d impactCoords);
 	
 	/**
-	 * Affichage de la balle (traante, donc)
+	 * Affichage de la balle (traï¿½ante, donc)
 	 * @param g
 	 */
 	public void draw(Graphics g);
 	
 	
 	/**
-	 * Mise ˆ jour des coordonnes de la balle, gestion des collisions, ...
+	 * Mise ï¿½ jour des coordonnï¿½es de la balle, gestion des collisions, ...
 	 */
 	public void computeNextFrame();
 }

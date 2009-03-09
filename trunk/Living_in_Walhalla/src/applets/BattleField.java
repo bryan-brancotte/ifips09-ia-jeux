@@ -11,18 +11,19 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 
+import life.IMover;
+import life.ITeam;
+import life.bots.CommonTeam;
+import life.bots.Cow;
+import life.bots.Personnage;
+import life.mover.MoverManager;
+
 import surface.Surface;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
 import waypoint.WaypointInstaller;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
-import bots.IMover;
-import bots.ITeam;
-import bots.bots.CommonTeam;
-import bots.bots.Cow;
-import bots.bots.Personnage;
-import bots.mover.MoverManager;
 
 /**
  * Very simple applet to handle fundamentals of A.I. in games.
