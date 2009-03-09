@@ -1,9 +1,9 @@
-package bots;
+package bots.mover;
 
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-public class MoverManager extends Thread {
+public class MoverThread extends Thread {
 
 	protected int timeStep;
 	protected boolean dontKillMe = true;
@@ -12,34 +12,39 @@ public class MoverManager extends Thread {
 
 	@Override
 	public void run() {
+		long l;
 		System.out.println("starting MoverManager");
 		while (dontKillMe) {
+			l = System.currentTimeMillis();
 			verrou.acquireUninterruptibly();
 			for (IMover m : movers)
 				m.moveInItsDirection();
 			verrou.release();
 			try {
-				Thread.sleep(timeStep);
+				l += timeStep - System.currentTimeMillis();
+				if (l > 0)
+					Thread.sleep(l);
+				// else
+				// System.out.println("Too Much");
 			} catch (InterruptedException e) {
 			}
 		}
 		System.out.println("dying MoverManager");
 	}
 
-	public void askToStop() {
+	protected void askToStop() {
 		dontKillMe = false;
 	}
 
-	public MoverManager(int timeStep) {
+	protected MoverThread(int timeStep) {
 		super();
 		this.movers = new LinkedList<IMover>();
 		this.timeStep = timeStep;
 	}
 
-	public void addMovers(IMover movers) {
+	protected void addMovers(IMover movers) {
 		verrou.acquireUninterruptibly();
 		this.movers.add(movers);
 		verrou.release();
 	}
-
 }

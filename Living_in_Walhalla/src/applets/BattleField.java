@@ -18,9 +18,9 @@ import waypoint.WaypointInstaller;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
 import bots.Cow;
-import bots.IMover;
-import bots.MoverManager;
 import bots.Personnage;
+import bots.mover.IMover;
+import bots.mover.MoverManager;
 
 /**
  * Very simple applet to handle fundamentals of A.I. in games.
@@ -153,6 +153,10 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		initaStar();
 		initBots();
 		initBelettes();
+		try {
+			Thread.sleep(200);
+		} catch (InterruptedException e) {
+		}
 	}
 
 	/**
@@ -169,15 +173,15 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		moverToDraw = new LinkedList<IMover>();
 		IMover im;
 
-		perso = new Personnage(this, aStar, Color.red, "Florence",null);
-		perso2 = new Personnage(this, aStar, Color.blue, "Bryan",null);
+		perso = new Personnage(this, aStar, Color.red, "Florence", null);
+		perso2 = new Personnage(this, aStar, Color.blue, "Bryan", null);
 		perso.setDestination(waypoints[100]);
 		perso2.setDestination(waypoints[300]);
-		moverManager = new MoverManager(30);
+		moverManager = new MoverManager(30,2);
 		moverManager.start();
 		moverManager.addMovers(perso);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			moverManager.addMovers(im = new Cow(this, aStar, waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
@@ -198,10 +202,6 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to creat the waypoint from the surface.
 	 */
 	public void initWaypoint() {
-		// waypoints = WaypointInstaller.placeGridAndRandomWaypoint(surface,
-		// 5);/*
-		// waypoints = WaypointInstaller.placeGridWaypoint(surface, 5);/*
-		// waypoints = WaypointInstaller.placeRandomWaypoint(surface, 500);/*
 		waypoints = WaypointInstaller.placeWaypoint(surface);/**/
 	}
 
