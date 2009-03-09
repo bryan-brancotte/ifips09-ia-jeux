@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+import bots.mover.IMover;
+
 import utils.Vector2d;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;

@@ -1,6 +1,6 @@
 package aStar2D;
 
-import bots.IMover;
+import bots.mover.IMover;
 import utils.LIFO;
 import utils.Vector2d;
 import utils.LIFO.Iterator;

@@ -1,4 +1,4 @@
-package bots;
+package bots.mover;
 
 import java.awt.Graphics;
 
