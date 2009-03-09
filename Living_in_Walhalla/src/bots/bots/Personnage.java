@@ -1,4 +1,4 @@
-package bots.impl;
+package bots.bots;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -52,6 +52,12 @@ public class Personnage extends ICharacter {
 
 	@Override
 	protected void journeyDone() {
+	}
+
+	@Override
+	public boolean isDead() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

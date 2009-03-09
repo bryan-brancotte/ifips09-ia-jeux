@@ -13,6 +13,7 @@ public class MoverManager {
 	}
 
 	public void askToStop() {
+		System.out.println("dying MoverManager");
 		for (MoverThread m : moverThreads)
 			m.askToStop();
 	}

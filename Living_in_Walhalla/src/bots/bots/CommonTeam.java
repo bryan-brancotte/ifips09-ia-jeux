@@ -1,4 +1,4 @@
-package bots.impl;
+package bots.bots;
 
 import bots.ITeam;
 

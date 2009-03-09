@@ -58,11 +58,11 @@ public abstract class ICharacter implements IMover {
 	public abstract void drawCharacter(Graphics g);
 
 	public void draw(Graphics g) {
-		nodesLocker.acquireUninterruptibly();
-		for (Node n : nodes) {
-			g.drawOval((int) n.x - 2, (int) (n.y - 2), 4, 4);
-		}
-		nodesLocker.release();
+		// nodesLocker.acquireUninterruptibly();
+		// for (Node n : nodes) {
+		// g.drawOval((int) n.x - 2, (int) (n.y - 2), 4, 4);
+		// }
+		// nodesLocker.release();
 		drawCharacter(g);
 	}
 

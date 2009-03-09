@@ -234,14 +234,6 @@ public class Surface {
 		objects.add(ob);
 
 		ob = new PolylineObject(this);
-		ob.addNode(new Vector2d(544F, 63F));
-		ob.addNode(new Vector2d(548F, 432F));
-		ob.addNode(new Vector2d(636F, 343F));
-		ob.addNode(new Vector2d(632F, 187F));
-		ob.fixObject();
-		objects.add(ob);
-
-		ob = new PolylineObject(this);
 		ob.addNode(new Vector2d(683F, 47F));
 		ob.addNode(new Vector2d(673F, 156F));
 		ob.addNode(new Vector2d(710F, 153F));
@@ -381,6 +373,42 @@ public class Surface {
 		objects.add(ob);
 
 		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(578F, 124F));
+		ob.addNode(new Vector2d(561F, 293F));
+		ob.addNode(new Vector2d(605F, 197F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(611F, 240F));
+		ob.addNode(new Vector2d(562F, 360F));
+		ob.addNode(new Vector2d(616F, 352F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(551F, 107F));
+		ob.addNode(new Vector2d(609F, 21F));
+		ob.addNode(new Vector2d(610F, 81F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(646F, 57F));
+		ob.addNode(new Vector2d(642F, 11F));
+		ob.addNode(new Vector2d(719F, 14F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(546F, 139F));
+		ob.addNode(new Vector2d(587F, 183F));
+		ob.addNode(new Vector2d(537F, 252F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		
 	}
 
 	/**

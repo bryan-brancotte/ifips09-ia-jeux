@@ -1,4 +1,4 @@
-package bots.impl;
+package bots.bots;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -19,7 +19,7 @@ public class Cow extends ICharacter {
 	/**
 	 * L'équipe des vaches : la nature. P.S: elle aime personne...
 	 */
-	protected static ITeam nature = new ITeam() {
+	public static ITeam nature = new ITeam() {
 		@Override
 		public String getName() {
 			return "nature";
@@ -75,5 +75,10 @@ public class Cow extends ICharacter {
 	@Override
 	protected void journeyDone() {
 		this.setDestination(waypoints[rand.nextInt(waypoints.length)]);
+	}
+
+	@Override
+	public boolean isDead() {
+		return false;
 	}
 }
