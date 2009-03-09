@@ -11,8 +11,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 
-import com.sun.org.apache.bcel.internal.generic.CPInstruction;
-
 import surface.Surface;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -21,9 +19,9 @@ import aStar2D.AStarMultiThread;
 import aStar2D.Node;
 import bots.IMover;
 import bots.ITeam;
-import bots.impl.CommonTeam;
-import bots.impl.Cow;
-import bots.impl.Personnage;
+import bots.bots.CommonTeam;
+import bots.bots.Cow;
+import bots.bots.Personnage;
 import bots.mover.MoverManager;
 
 /**
@@ -170,7 +168,6 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to init all your belettes structures.
 	 */
 	public void initBelettes() {
-		// TODO
 	}
 
 	/**
@@ -186,11 +183,12 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		perso2 = new Personnage(this, aStar, Color.blue, "Bryan", teamBlue);
 		perso.setDestination(waypoints[100]);
 		perso2.setDestination(waypoints[300]);
-		moverManager = new MoverManager(50, 5);
+
+		moverManager = new MoverManager(50, 10);
 		moverManager.start();
 		moverManager.addMovers(perso);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 2; i++) {
+		for (int i = 0; i < 5; i++) {
 			moverManager.addMovers(im = new Cow(this, aStar, waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
@@ -238,12 +236,6 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	public void mouseExited(MouseEvent e) {
 	}
 
-	/*
-	 * TODO: use this method your own way.
-	 * 
-	 * @see
-	 * java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-	 */
 	public void mouseMoved(MouseEvent e) {
 		if (comportement == BattleFieldBehavior.MOUSE_TRACKING) {
 			// Node oldPointOrigin = perso.getNode();
@@ -274,13 +266,6 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	public void mousePressed(MouseEvent e) {
 	}
 
-	/*
-	 * Here we memorize the mouse position to draw lines where points can see
-	 * eachother. TODO: you must handle mouse events in your game.
-	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
 	public void mouseReleased(MouseEvent e) {
 		// System.out.println(comportement);
 		if (comportement == BattleFieldBehavior.TWO_POINT_PATH) {
@@ -325,9 +310,9 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 					cost = pointDestination.distance(e.getX(), e.getY());
 				}
 			}
-			if (Cow.rand.nextBoolean())
+			if (e.getButton() == 1)
 				perso.setDestination(pointDestination);
-			else
+			else if (e.getButton() == 3)
 				perso2.setDestination(pointDestination);
 		}
 		if (LEVEL_CREATING) {
@@ -358,11 +343,9 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		buffer_canvas.setColor(Color.black);
 		buffer_canvas.drawRect(0, 0, viewer_xsize - 1, viewer_ysize - 1);
 
-		// 3. TODO: Draw the bots in their position/direction
+		// TODO: Draw the bullets / Special Effects.
 
-		// 4. TODO: Draw the bullets / Special Effects.
-
-		// 5. Draw the Waypoint
+		// Draw the Waypoint
 		if (DRAW_WAYPOINT && waypoints != null) {
 			Iterator<Node.Link> it;
 			Node.Link wf;
@@ -377,14 +360,31 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		}
 		if (DRAW_CONTROL_MAP && waypoints != null) {
 			// buffer_canvas.setColor(Color.yellow);
+			int k;
 			for (Node w : waypoints) {
-				// System.out.println(w.x / PREF_VIEWER_XSIZE);
-				buffer_canvas.setColor(new Color((3F * w.x / (float) PREF_VIEWER_XSIZE) % 1, 1, 1));
-				drawDot(buffer_canvas, w, 4);
+				if ((k = (int) (w.getOverCost(teamRed))) < 0) {
+					if (k < -127)
+						buffer_canvas.setColor(Color.red);
+					else
+						buffer_canvas.setColor(new Color((-k) << 1, 0, 0));
+					drawDot(buffer_canvas, w, 4);
+				} else if ((k = (int) (w.getOverCost(teamBlue))) < 0) {
+					if (k < -127)
+						buffer_canvas.setColor(Color.blue);
+					else
+						buffer_canvas.setColor(new Color(0, 0, (-k) << 1));
+					drawDot(buffer_canvas, w, 4);
+				} else if ((k = (int) (w.getOverCost(Cow.nature))) < 0) {
+					if (k < -127)
+						buffer_canvas.setColor(Color.green);
+					else
+						buffer_canvas.setColor(new Color(0, (-k) << 1, 0));
+					drawDot(buffer_canvas, w, 4);
+				}
 			}
 		}
 
-		// 5. Draw the Path
+		// Draw the Path
 		if (DRAW_PATH) {
 			// 6. Draw the path
 			PathDrawing(perso);
@@ -402,6 +402,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		perso.draw(buffer_canvas);
 		// drawRoundDot(buffer_canvas,perso.getCoord(),10);
 		perso2.draw(buffer_canvas);
+
+		// Draw the bots in their position/direction
 		for (IMover im : moverToDraw)
 			im.draw(buffer_canvas);
 
@@ -456,11 +458,9 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 */
 	public void run() {
 		do {
-			updateBelettes();
-			updateBots();
 			repaint();
 			try {
-				Thread.sleep(50);
+				Thread.sleep(60);
 			} catch (InterruptedException _ex) {
 			}
 		} while (true);
@@ -494,22 +494,6 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// Simply repaint the battle field... Called every frame...
 	public void update(Graphics g) {
 		paint(g);
-	}
-
-	/**
-	 * Must update bullets positions and handles damages to bots...
-	 */
-	public void updateBelettes() {
-		// TODO: nothing here yet
-	}
-
-	/**
-	 * Must update bots position / decisions / health This is where your AI will
-	 * be called.
-	 * 
-	 */
-	public void updateBots() {
-		// TODO: You have to update all your bots here.
 	}
 
 }

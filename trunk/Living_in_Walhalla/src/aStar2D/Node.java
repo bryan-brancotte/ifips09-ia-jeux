@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.concurrent.Semaphore;
 
 import bots.IMover;
+import bots.ITeam;
 import utils.LIFO;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -157,7 +158,20 @@ public class Node extends Vector2d {
 			if (e.getKey().getTeam().isOpposedTo(forWho.getTeam()))
 				oc += e.getValue();
 			else if (forWho != e.getKey())
-				oc -= 5;
+				oc -= 2;
+		}
+		influentialsLocker.release();
+		return oc;
+	}
+
+	public float getOverCost(ITeam forWho) {
+		float oc = 0F;
+		influentialsLocker.acquireUninterruptibly();
+		for (Entry<IMover, Float> e : influentials.entrySet()) {
+			if (e.getKey().getTeam().isOpposedTo(forWho))
+				oc += e.getValue();
+			else
+				oc -= e.getValue();
 		}
 		influentialsLocker.release();
 		return oc;
