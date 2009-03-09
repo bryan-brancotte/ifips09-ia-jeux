@@ -1,8 +1,11 @@
-package bots;
+package bots.impl;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
+
+import bots.ICharacter;
+import bots.ITeam;
 
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;

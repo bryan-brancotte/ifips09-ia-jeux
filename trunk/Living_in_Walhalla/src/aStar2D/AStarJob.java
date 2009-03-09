@@ -4,7 +4,7 @@ import java.util.concurrent.Semaphore;
 
 import utils.LIFO_Pool;
 import utils.LIFO_Pool.Iterator;
-import bots.mover.IMover;
+import bots.IMover;
 
 public class AStarJob {
 

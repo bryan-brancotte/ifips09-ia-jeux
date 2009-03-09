@@ -2,6 +2,8 @@ package bots.mover;
 
 import java.util.LinkedList;
 
+import bots.IMover;
+
 public class MoverManager {
 
 	protected LinkedList<MoverThread> moverThreads;

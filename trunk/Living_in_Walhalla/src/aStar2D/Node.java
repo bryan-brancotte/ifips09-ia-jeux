@@ -1,6 +1,9 @@
 package aStar2D;
 
-import bots.mover.IMover;
+import java.util.HashMap;
+import java.util.Map.Entry;
+
+import bots.IMover;
 import utils.LIFO;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -8,6 +11,8 @@ import utils.LIFO.Iterator;
 public class Node extends Vector2d {
 
 	protected static LIFO<Node> world;
+
+	protected HashMap<IMover, Float> influentials;
 
 	public class Link {
 		protected float cost;
@@ -49,6 +54,7 @@ public class Node extends Vector2d {
 		super();
 		if (world == null)
 			world = new LIFO<Node>();
+		influentials = new HashMap<IMover, Float>();
 		world.add(this);
 		this.previous = new Link();
 		this.neighbor = new LIFO<Link>();
@@ -58,6 +64,7 @@ public class Node extends Vector2d {
 		super(x + 0.1F, y + 0.1F);
 		if (world == null)
 			world = new LIFO<Node>();
+		influentials = new HashMap<IMover, Float>();
 		world.add(this);
 		this.previous = new Link();
 		this.neighbor = new LIFO<Link>();
@@ -134,7 +141,14 @@ public class Node extends Vector2d {
 	}
 
 	public float getOverCost(IMover forWho) {
-		return 0;
+		float oc = 0F;
+		for (Entry<IMover, Float> e : influentials.entrySet()) {
+			if (e.getKey().getTeam().isOpposedTo(forWho.getTeam()))
+				oc += e.getValue();
+			else
+				oc -= e.getValue();
+		}
+		return oc;
 	}
 
 	public static void linkNode(Node A, Node B) {

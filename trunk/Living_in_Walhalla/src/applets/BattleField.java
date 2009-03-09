@@ -17,9 +17,11 @@ import utils.LIFO.Iterator;
 import waypoint.WaypointInstaller;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
-import bots.Cow;
-import bots.Personnage;
-import bots.mover.IMover;
+import bots.IMover;
+import bots.ITeam;
+import bots.impl.CommonTeam;
+import bots.impl.Cow;
+import bots.impl.Personnage;
 import bots.mover.MoverManager;
 
 /**
@@ -91,23 +93,24 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	private Node pointDestination;
 	private Personnage perso;
 	private Personnage perso2;
+
+	/**
+	 * 
+	 */
+	private ITeam teamRed;
+	private ITeam teamBlue;
 	private LinkedList<IMover> moverToDraw;
 	public Surface surface; // The surface that contains the objects...
 	Node[] waypoints;
 	AStarMultiThread aStar;
 
 	/**
-	 * Thread that sleeps and update the screen.
+	 * 
 	 */
-	private Thread update;
-
+	private Thread update; // Thread that sleeps and update the screen.
 	Graphics viewer_canvas; // What the user actually see (on-screen buffer)
-
-	// Viewer variables
 	float viewer_scale; // Ratio from size of surface to size of viewer
-
 	int viewer_xsize;
-
 	int viewer_ysize;
 
 	// Very simple constructor
@@ -170,18 +173,20 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to init all your bots.
 	 */
 	public void initBots() {
+		teamBlue = new CommonTeam("Blue");
+		teamRed = new CommonTeam("Red");
 		moverToDraw = new LinkedList<IMover>();
 		IMover im;
 
-		perso = new Personnage(this, aStar, Color.red, "Florence", null);
-		perso2 = new Personnage(this, aStar, Color.blue, "Bryan", null);
+		perso = new Personnage(this, aStar, Color.red, "Florence", teamRed);
+		perso2 = new Personnage(this, aStar, Color.blue, "Bryan", teamBlue);
 		perso.setDestination(waypoints[100]);
 		perso2.setDestination(waypoints[300]);
-		moverManager = new MoverManager(30,2);
+		moverManager = new MoverManager(30, 5);
 		moverManager.start();
 		moverManager.addMovers(perso);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 5; i++) {
 			moverManager.addMovers(im = new Cow(this, aStar, waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
