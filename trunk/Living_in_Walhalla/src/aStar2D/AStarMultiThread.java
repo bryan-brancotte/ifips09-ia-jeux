@@ -3,12 +3,13 @@ package aStar2D;
 import java.util.HashMap;
 
 import utils.LIFO_Pool.Iterator;
+import bots.IMover;
 
 public class AStarMultiThread {
 
 	protected AStarComutingThread computing;
 
-	protected HashMap<Object, AStarJob> jobs;
+	protected HashMap<IMover, AStarJob> jobs;
 
 	/**
 	 * 
@@ -18,19 +19,19 @@ public class AStarMultiThread {
 		super();
 		computing = new AStarComutingThread(useHeuristique);
 		computing.start();
-		jobs = new HashMap<Object, AStarJob>();
+		jobs = new HashMap<IMover, AStarJob>();
 	}
 
 	public void askToStop() {
 		computing.askToStop();
 	}
 
-	public void computPath(Node origin, Node destination, Object forWho) {
+	public void computPath(Node origin, Node destination, IMover forWho) {
 		if ((origin == null) || (destination == null))
 			return;
 		AStarJob job = jobs.get(forWho);
 		if (job == null) {
-			job = new AStarJob();
+			job = new AStarJob(forWho);
 			jobs.put(forWho, job);
 		}
 		if (job.origin != origin || job.destination != destination) {
@@ -41,10 +42,10 @@ public class AStarMultiThread {
 			computing.setWork(job);
 	}
 
-	public Iterator<Node> getPath(Object forWho) {
+	public Iterator<Node> getPath(IMover forWho) {
 		AStarJob job = jobs.get(forWho);
 		if (job == null) {
-			job = new AStarJob();
+			job = new AStarJob(forWho);
 			jobs.put(forWho, job);
 		}
 		return job.getPath();

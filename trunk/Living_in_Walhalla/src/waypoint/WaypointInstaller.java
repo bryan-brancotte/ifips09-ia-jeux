@@ -22,7 +22,7 @@ public class WaypointInstaller {
 		for (int i = 0; i < nbWaypoint; i++) {
 			nodeGrid[i] = new Node[nbWaypoint];
 			for (int j = 0; j < nbWaypoint; j++) {
-				nodeGrid[i][j] = new Node(0.5F+i * stepx, 0.5F+j * stepy);
+				nodeGrid[i][j] = new Node(2F+i * stepx, 2F+j * stepy);
 				if (map.isInAnObject(nodeGrid[i][j])) {
 					nodeGrid[i][j] = null;
 					cptFail++;

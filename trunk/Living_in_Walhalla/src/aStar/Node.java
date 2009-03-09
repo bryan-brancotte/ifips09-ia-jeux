@@ -106,10 +106,20 @@ public class Node<T> {
 		this.previous.set(cost, node);
 	}
 
+	/**
+	 * Estimation du cout pour atteindre le noeud node
+	 * 
+	 * @param node
+	 * @return
+	 */
 	public float heuristique(Node<?> node) {
 		if ((node.origin instanceof Dot) && (this.origin instanceof Dot)) {
 			return getDistanceFrom((Dot) node.origin, (Dot) this.origin);
 		}
+		return 0;
+	}
+
+	public float getOverCost() {
 		return 0;
 	}
 
@@ -123,7 +133,8 @@ public class Node<T> {
 			val = dot1.getZ() - dot2.getZ();
 			ret += val * val;
 		}
-		// utilisation de la racine carré de John Carmack révisé par Chris Lomont
+		// utilisation de la racine carré de John Carmack
+		// révisé par Chris Lomont
 		// Pour John Carmack : 0x5f3759df
 		// Pour Chris Lomont : 0x5f375a86
 		// les temps de calcul se retourve divisé par 2

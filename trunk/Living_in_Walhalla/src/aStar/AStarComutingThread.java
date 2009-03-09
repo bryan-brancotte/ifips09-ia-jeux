@@ -12,7 +12,7 @@ public class AStarComutingThread<T> extends Thread {
 
 	private LIFO_Pool<T> chemin;
 
-	private float cost=Float.NaN;
+	private float cost = Float.NaN;
 	private float time;
 	private Node<T> origin;
 	private Node<T> destination;
@@ -73,28 +73,35 @@ public class AStarComutingThread<T> extends Thread {
 		frontiere.removeAll(false);
 		frontiere.add(origin, 0);
 
-		// tan que la frontière n'est pas vide, et que le node au coût le plus faible n'est pas la destination
+		// tan que la frontière n'est pas vide, et que le node au coût le plus
+		// faible n'est pas la destination
 		while (frontiere.hasNext() && ((activeDot = frontiere.removeFirst()) != destination)) {
 			if (killRunningComputing)
 				return;
 			// on parcourt les voisin du noeud au plus faible coût
 			it = activeDot.getNeighbor();
-			// on marque ce noeud pour qu'on ne le considère plus comme un point de passage
+			// on marque ce noeud pour qu'on ne le considère plus comme un point
+			// de passage
 			activeDot.setFinished(true);
 			// tan qu'il y a des voisins
 			while ((voisin = it.next()) != null) {
 				if (killRunningComputing)
 					return;
-				// System.out.println(max = (((tmp = frontiere.size()) > max) ? tmp : max));
+				// System.out.println(max = (((tmp = frontiere.size()) > max) ?
+				// tmp : max));
 				// si ce n'est pas un voisin qui est dans l'espace connu
 				if (!voisin.node.isFinished()) {
-					// on ajout tente d'ajoute se noeud à la frontière, la SortedList peut refusé de l'ajouter si le
+					// on ajout tente d'ajoute se noeud à la frontière, la
+					// SortedList peut refusé de l'ajouter si le
 					// noeud est déja présent avec un coût inférieur
 					if (useHeuristique)
 						heur = voisin.node.heuristique(destination);
-					if (frontiere.add(voisin.node, activeDot.getPreviousCost() + voisin.cost + heur))
-						// on définit ca ce voisin que le noeud précédent est le noeud actif
-						voisin.node.setPrevious(activeDot.getPreviousCost() + voisin.cost, activeDot);
+					if (frontiere.add(voisin.node, activeDot.getPreviousCost() + activeDot.getOverCost() + voisin.cost
+							+ heur))
+						// on définit ca ce voisin que le noeud précédent est le
+						// noeud actif
+						voisin.node.setPrevious(activeDot.getPreviousCost() + activeDot.getOverCost() + voisin.cost,
+								activeDot);
 				}
 			}
 
