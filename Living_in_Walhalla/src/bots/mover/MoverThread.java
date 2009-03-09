@@ -3,6 +3,8 @@ package bots.mover;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+import bots.IMover;
+
 public class MoverThread extends Thread {
 
 	protected int timeStep;
@@ -22,7 +24,7 @@ public class MoverThread extends Thread {
 			verrou.release();
 			try {
 				l += timeStep - System.currentTimeMillis();
-				if (l > 0)
+				if (l > 3)
 					Thread.sleep(l);
 				// else
 				// System.out.println("Too Much");

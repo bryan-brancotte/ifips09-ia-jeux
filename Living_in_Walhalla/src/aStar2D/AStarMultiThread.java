@@ -3,7 +3,7 @@ package aStar2D;
 import java.util.HashMap;
 
 import utils.LIFO_Pool.Iterator;
-import bots.mover.IMover;
+import bots.IMover;
 
 public class AStarMultiThread {
 

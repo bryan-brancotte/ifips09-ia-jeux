@@ -1,7 +1,10 @@
-package bots;
+package bots.impl;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import bots.ICharacter;
+import bots.ITeam;
 
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
@@ -14,7 +17,7 @@ public class Personnage extends ICharacter {
 	protected Color myColor;
 
 	public Personnage(BattleField battleField, AStarMultiThread star, Color color, String name, ITeam team) {
-		super(battleField, star, new Node(10, 10),team);
+		super(battleField, star, new Node(10,100),team);
 		this.name = name;
 		this.myColor = color;
 	}

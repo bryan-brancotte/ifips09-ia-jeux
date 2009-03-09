@@ -1,4 +1,4 @@
-package bots.mover;
+package bots;
 
 import java.awt.Graphics;
 
@@ -11,5 +11,7 @@ public interface IMover {
 	public abstract void moveTo(Vector2d d);
 
 	public abstract boolean moveInItsDirection();
+
+	public abstract ITeam getTeam();
 
 }
