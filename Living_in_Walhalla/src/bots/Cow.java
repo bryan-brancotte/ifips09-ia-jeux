@@ -13,8 +13,23 @@ public class Cow extends ICharacter {
 	private Node[] waypoints;
 	public static Random rand = new Random();
 
+	/**
+	 * L'équipe des vaches : la nature. P.S: elle aime personne...
+	 */
+	protected static ITeam nature = new ITeam() {
+		@Override
+		public String getName() {
+			return "nature";
+		}
+
+		@Override
+		public boolean isOpposedTo(ITeam team) {
+			return this != team;
+		}
+	};
+
 	public Cow(BattleField battleField, AStarMultiThread star, Node startupPosition, Node[] waypoints) {
-		super(battleField, star, startupPosition);
+		super(battleField, star, startupPosition, nature);
 		this.waypoints = waypoints;
 		updatePosition();
 		journeyDone();
@@ -22,23 +37,31 @@ public class Cow extends ICharacter {
 
 	@Override
 	public float botRadius() {
-		return 3;
+		return 5;
 	}
 
 	@Override
 	public float getSpeed() {
-		return 0.5F;
+		return 1F;
 	}
 
 	@Override
-	public void draw(Graphics g) {
+	public void drawCharacter(Graphics g) {
 		if (coord == null)
 			return;
 		int x = (int) coord.x;
 		int y = (int) coord.y;
 		g.setColor(Color.white);
-		g.fillRect((int) (x - botRadius()), y - 1, ((int) botRadius()) << 1, 2);
+		g.fillPolygon(new int[] { x - (int) botRadius(), x - 2, x + 2, x + (int) botRadius() }, new int[] {
+				y - (int) botRadius(), y + (int) botRadius(), y + (int) botRadius(), y - (int) botRadius() }, 4);
+		g.setColor(Color.yellow);
+		g.fillRect(x - 2 + (int) botRadius(), (int) (y - botRadius() - 2), 2, 2);
+		g.fillRect((int) (x - botRadius()), (int) (y - botRadius() - 2), 2, 2);
 		g.setColor(Color.black);
+		g.drawLine(x - (int) botRadius() + 2, y + 2 - (int) botRadius(), x - (int) botRadius() + 3, y + 2
+				- (int) botRadius());
+		g.drawLine(x + (int) botRadius() - 2, y + 2 - (int) botRadius(), x + (int) botRadius() - 3, y + 2
+				- (int) botRadius());
 	}
 
 	@Override

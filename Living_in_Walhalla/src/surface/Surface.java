@@ -26,10 +26,12 @@ public class Surface {
 	}
 
 	/**
-	 * Well, right now the objects are built "by hands". May by the first thing to do would be to put polylines objects
-	 * in a map, and read the file and objects.
+	 * Well, right now the objects are built "by hands". May by the first thing
+	 * to do would be to put polylines objects in a map, and read the file and
+	 * objects.
 	 * 
-	 * In this case, the size of the surface should be set inside the constructor?
+	 * In this case, the size of the surface should be set inside the
+	 * constructor?
 	 * 
 	 * @param wxsize
 	 * @param wysize
@@ -68,7 +70,7 @@ public class Surface {
 		ob.addNode(new Vector2d(238F, 128F));
 		ob.addNode(new Vector2d(272F, 183F));
 		ob.addNode(new Vector2d(374F, 136F));
-		ob.addNode(new Vector2d(195F, 323F));
+		ob.addNode(new Vector2d(203F, 315F));
 		ob.addNode(new Vector2d(224F, 268F));
 		ob.fixObject();
 		objects.add(ob);
@@ -76,7 +78,8 @@ public class Surface {
 		ob = new PolylineObject(this);
 		ob.addNode(new Vector2d(648F, 79F));
 		ob.addNode(new Vector2d(620F, 444F));
-		ob.addNode(new Vector2d(646F, 345F));
+		ob.addNode(new Vector2d(630F, 452F));
+		ob.addNode(new Vector2d(646F, 395F));
 		ob.addNode(new Vector2d(711F, 28F));
 		ob.fixObject();
 		objects.add(ob);
@@ -103,27 +106,63 @@ public class Surface {
 		ob.addNode(new Vector2d(624F, -55F));
 		ob.fixObject();
 		objects.add(ob);
-		//
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(300F, 63F));
+		ob.addNode(new Vector2d(65F, 69F));
+		ob.addNode(new Vector2d(66F, 87F));
+		ob.addNode(new Vector2d(309F, 78F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(40F, 68F));
+		ob.addNode(new Vector2d(47F, 548F));
+		ob.addNode(new Vector2d(63F, 550F));
+		ob.addNode(new Vector2d(73F, 63F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(146F, 320F));
+		ob.addNode(new Vector2d(132F, 605F));
+		ob.addNode(new Vector2d(156F, 604F));
+		ob.addNode(new Vector2d(158F, 307F));
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(135F, 293F));
+		ob.addNode(new Vector2d(552F, 539F));
+		ob.addNode(new Vector2d(549F, 546F));
+		ob.addNode(new Vector2d(142F, 331F));
+
+		ob.fixObject();
+		objects.add(ob);
+
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(505F, 338F));
+		ob.addNode(new Vector2d(502F, 465F));
+		ob.addNode(new Vector2d(596F, 412F));
+		ob.fixObject();
+		objects.add(ob);
+		
+		ob = new PolylineObject(this);
+		ob.addNode(new Vector2d(623F, 562F));
+		ob.addNode(new Vector2d(726F, 393F));
+		ob.addNode(new Vector2d(744F, 418F));
+		ob.addNode(new Vector2d(674F, 573F));
+		ob.fixObject();
+		objects.add(ob);
+
 		// ob = new PolylineObject(this);
 		// ob.fixObject();
 		// objects.add(ob);
-		//
+
 		// ob = new PolylineObject(this);
 		// ob.fixObject();
 		// objects.add(ob);
-		//
-		// ob = new PolylineObject(this);
-		// ob.fixObject();
-		// objects.add(ob);
-		//
-		// ob = new PolylineObject(this);
-		// ob.fixObject();
-		// objects.add(ob);
-		//
-		// ob = new PolylineObject(this);
-		// ob.fixObject();
-		// objects.add(ob);
-		//
+
 		// ob = new PolylineObject(this);
 		// ob.fixObject();
 		// objects.add(ob);
@@ -142,8 +181,9 @@ public class Surface {
 	}
 
 	/**
-	 * One of the main methods. Checks if the segment (tmpA, tmpB) intersects any of the lines of any polyline. If not,
-	 * then the point tmpA 'can see' the point tmpB.
+	 * One of the main methods. Checks if the segment (tmpA, tmpB) intersects
+	 * any of the lines of any polyline. If not, then the point tmpA 'can see'
+	 * the point tmpB.
 	 * 
 	 * @param tmpA
 	 * @param tmpB

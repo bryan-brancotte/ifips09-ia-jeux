@@ -13,6 +13,7 @@ import java.util.LinkedList;
 
 import surface.Surface;
 import utils.Vector2d;
+import utils.LIFO.Iterator;
 import waypoint.WaypointInstaller;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
@@ -54,9 +55,13 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// deduced)
 	private static final long serialVersionUID = 1L;
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
-	protected boolean DRAW_PATH_AND_WAYPOINT = true;
+	protected boolean DRAW_PATH = true;
+	protected boolean DRAW_WAYPOINT = false;
+	protected boolean DRAW_CONTROL_MAP = true;
 
 	protected MoverManager moverManager;
+
+	protected long lastTimePaint = 0;
 
 	public static void main(String args[]) {
 		Frame f = new Frame();
@@ -67,8 +72,13 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		f.add("Center", app);
 	}
 
-	Graphics buffer_canvas; // Where to draw (off-screen buffer)
-	// Canvas for double buffering
+	/**
+	 * Where to draw (off-screen buffer)
+	 */
+	Graphics buffer_canvas;
+	/**
+	 * Canvas for double buffering
+	 */
 	Image buffer_canvasimage;
 	/**
 	 * string printed in the simple hud. For debugging...
@@ -159,15 +169,15 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		moverToDraw = new LinkedList<IMover>();
 		IMover im;
 
-		perso = new Personnage(this, aStar, Color.red, "Florence");
-		perso2 = new Personnage(this, aStar, Color.blue, "Bryan");
+		perso = new Personnage(this, aStar, Color.red, "Florence",null);
+		perso2 = new Personnage(this, aStar, Color.blue, "Bryan",null);
 		perso.setDestination(waypoints[100]);
 		perso2.setDestination(waypoints[300]);
-		moverManager = new MoverManager(10);
+		moverManager = new MoverManager(30);
 		moverManager.start();
 		moverManager.addMovers(perso);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 5; i++) {
 			moverManager.addMovers(im = new Cow(this, aStar, waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
@@ -306,11 +316,12 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 					cost = pointDestination.distance(e.getX(), e.getY());
 				}
 			}
-			perso.setDestination(pointDestination);
-			perso2.setDestination(pointDestination);
+			if (Cow.rand.nextBoolean())
+				perso.setDestination(pointDestination);
+			else
+				perso2.setDestination(pointDestination);
 		}
-		System.out.println("ob.addNode(new Vector2d(" + e.getX() * viewer_scale + "F, " + e.getY() * viewer_scale
-				+ "F));");
+		System.out.println("ob.addNode(new Vector2d(" + e.getX() + "F, " + e.getY() + "F));");
 	}
 
 	/*
@@ -334,41 +345,37 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		// 4. TODO: Draw the bullets / Special Effects.
 
 		// 5. Draw the Waypoint
-		// if (DRAW_PATH_AND_WAYPOINT && waypoints != null /*
-		// * && waypoints.length <
-		// * 100/
-		// */) {
-		// Iterator<Node.Link> it;
-		// Node.Link wf;
-		// buffer_canvas.setColor(Color.yellow);
-		// for (Node w : waypoints) {
-		// drawDot(buffer_canvas, w, 4);
-		// it = w.getNeighbor();
-		// while ((wf = it.next()) != null) {
-		// buffer_canvas.drawLine((int) w.x, (int) w.y, (int) wf.getNode().x,
-		// (int) wf.getNode().y);
-		// }
-		// }
-		// }
+		if (DRAW_WAYPOINT && waypoints != null) {
+			Iterator<Node.Link> it;
+			Node.Link wf;
+			buffer_canvas.setColor(Color.yellow);
+			for (Node w : waypoints) {
+				drawDot(buffer_canvas, w, 4);
+				it = w.getNeighbor();
+				while ((wf = it.next()) != null) {
+					buffer_canvas.drawLine((int) w.x, (int) w.y, (int) wf.getNode().x, (int) wf.getNode().y);
+				}
+			}
+		}
+		if (DRAW_CONTROL_MAP && waypoints != null) {
+			// buffer_canvas.setColor(Color.yellow);
+			for (Node w : waypoints) {
+				// System.out.println(w.x / PREF_VIEWER_XSIZE);
+				buffer_canvas.setColor(new Color((3F * w.x / (float) PREF_VIEWER_XSIZE) % 1, 1, 1));
+				drawDot(buffer_canvas, w, 4);
+			}
+		}
 
-		// 6 Draw the begeining and the end
-		if (DRAW_PATH_AND_WAYPOINT) {
+		// 5. Draw the Path
+		if (DRAW_PATH) {
 			// 6. Draw the path
 			PathDrawing(perso);
 			PathDrawing(perso2);
 			for (IMover im : moverToDraw)
 				PathDrawing(im);
-			// else
-			// while (!directionDone && itPath.hasNext()) {
-			// n = itPath.next();
-			// if (n.getPreviousNode() != null) {
-			// directionDone = true;
-			// perso.setDestination(n);
-			// // directionDone = !(perso.getCoord().equals(n));
-			// }
-			// }
 		}
-		gui_string = "[Coût du chemin : " + ((int) (aStar.getCostPath(perso) * 1000) / 1000F) + "]";
+		gui_string = "[ FPS : " + (int) (1e9F / (System.nanoTime() - lastTimePaint)) + " ]";
+		lastTimePaint = System.nanoTime();
 
 		// System.out.println("pointDestination:" + pointDestination + " at " +
 		// cost + " from your clic");

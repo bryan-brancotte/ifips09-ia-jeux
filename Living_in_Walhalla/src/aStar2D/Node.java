@@ -1,5 +1,6 @@
 package aStar2D;
 
+import bots.IMover;
 import utils.LIFO;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -130,6 +131,10 @@ public class Node extends Vector2d {
 
 	public void setPrevious(float cost, Node node) {
 		this.previous.set(cost, node);
+	}
+
+	public float getOverCost(IMover forWho) {
+		return 0;
 	}
 
 	public static void linkNode(Node A, Node B) {

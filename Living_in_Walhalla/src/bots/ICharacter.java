@@ -14,7 +14,7 @@ import applets.BattleField;
 
 public abstract class ICharacter implements IMover {
 
-	public static int MAX_DST = 40;
+	public static int MAX_DST = 50;
 	protected AStarMultiThread aStar;
 
 	protected BattleField battleField;
@@ -28,16 +28,23 @@ public abstract class ICharacter implements IMover {
 	protected Node node = null;
 
 	protected LinkedList<Node> nodes = null;
+	protected Semaphore nodesLocker = new Semaphore(1);
 
 	protected HashSet<Node> nodesBuffer = null;
-	protected final Semaphore verrou = new Semaphore(1);
 
 	private boolean journeyDone = false;
 
-	public ICharacter(BattleField battleField, AStarMultiThread aStar, Node startupPosition) {
+	protected ITeam team;
+
+	public ITeam getTeam() {
+		return team;
+	}
+
+	public ICharacter(BattleField battleField, AStarMultiThread aStar, Node startupPosition, ITeam team) {
 		super();
 		this.battleField = battleField;
 		this.aStar = aStar;
+		this.team = team;
 		coord = new Vector2d(startupPosition.x, startupPosition.y);
 		nodes = new LinkedList<Node>();
 		nodesBuffer = new HashSet<Node>();
@@ -48,7 +55,16 @@ public abstract class ICharacter implements IMover {
 
 	public abstract float botRadius();
 
-	public abstract void draw(Graphics g);
+	public abstract void drawCharacter(Graphics g);
+
+	public void draw(Graphics g) {
+		nodesLocker.acquireUninterruptibly();
+		for (Node n : nodes) {
+			g.drawOval((int) n.x - 2, (int) (n.y - 2), 4, 4);
+		}
+		nodesLocker.release();
+		drawCharacter(g);
+	}
 
 	public Vector2d getCoord() {
 		return coord;
@@ -91,7 +107,7 @@ public abstract class ICharacter implements IMover {
 			if (!journeyDone) {
 				journeyDone = true;
 				journeyDone();
-				System.out.println(this.getName() + " is done");
+				// System.out.println(this.getName() + " is done");
 			}
 			return true;
 		}
@@ -123,19 +139,27 @@ public abstract class ICharacter implements IMover {
 		return norme < getSpeed() / 10;
 	}
 
+	/**
+	 * Téléport le personnage à cette localisation
+	 */
 	public void moveTo(Vector2d d) {
 		coord.set(d);
 		nodes.clear();
 		updatePosition();
 	}
 
+	/**
+	 * Définit la destination comme étant le node passé en param
+	 * 
+	 * @param destination
+	 */
 	public void setDestination(Node destination) {
 		journeyDone = false;
 		this.destination = destination;
 	}
 
 	public void updatePosition() {
-		if (!verrou.tryAcquire())
+		if (!nodesLocker.tryAcquire())
 			return;
 		if (nodes.size() == 0) {
 			for (Node n : battleField.getWaypoint())
@@ -173,7 +197,7 @@ public abstract class ICharacter implements IMover {
 		for (Node n : nodesBuffer)
 			nodes.remove(n);
 		nodesBuffer.clear();
-		verrou.release();
+		nodesLocker.release();
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.concurrent.Semaphore;
 
 import utils.LIFO_Pool;
 import utils.LIFO_Pool.Iterator;
+import bots.IMover;
 
 public class AStarJob {
 
@@ -12,10 +13,16 @@ public class AStarJob {
 	protected LIFO_Pool<Node> chemin;
 	protected long lastTimeDone = 0;
 	protected float cost = 0;
+	protected IMover owner;
+	public IMover getOwner() {
+		return owner;
+	}
+
 	protected Semaphore verrou = new Semaphore(1);
 
-	protected AStarJob() {
+	protected AStarJob(IMover owner) {
 		chemin = new LIFO_Pool<Node>();
+		this.owner = owner;
 	}
 
 	public Node getDestination() {
@@ -29,6 +36,6 @@ public class AStarJob {
 	}
 
 	public boolean needRebuild() {
-		return ((System.nanoTime() - lastTimeDone) > 2e7);
+		return ((System.nanoTime() - lastTimeDone) > 2e9);
 	}
 }

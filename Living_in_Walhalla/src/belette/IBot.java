@@ -1,4 +1,4 @@
-package bots;
+package belette;
 
 import java.awt.Graphics;
 
