@@ -15,18 +15,13 @@ import applets.BattleField;
 public abstract class ICharacter implements IMover {
 
 	public static int MAX_DST = 100;
-	protected AStarMultiThread aStar;
-
-	protected BattleField battleField;
+	protected static AStarMultiThread aStar;
+	protected static BattleField battleField;
 
 	protected Vector2d coord;
-
 	protected Node destination = null;
-
 	protected Node direction = null;
-
 	protected Node node = null;
-
 	protected LinkedList<Node> nodes = null;
 	protected Semaphore nodesLocker = new Semaphore(1);
 
@@ -40,10 +35,13 @@ public abstract class ICharacter implements IMover {
 		return team;
 	}
 
-	public ICharacter(BattleField battleField, AStarMultiThread aStar, Node startupPosition, ITeam team) {
+	public static void init(BattleField battleField, AStarMultiThread aStar) {
+		ICharacter.battleField = battleField;
+		ICharacter.aStar = aStar;
+	}
+
+	public ICharacter(Node startupPosition, ITeam team) {
 		super();
-		this.battleField = battleField;
-		this.aStar = aStar;
 		this.team = team;
 		coord = new Vector2d(startupPosition.x, startupPosition.y);
 		nodes = new LinkedList<Node>();
@@ -137,15 +135,6 @@ public abstract class ICharacter implements IMover {
 		coord.setSum(v, coord);
 		updatePosition();
 		return norme < getSpeed() / 10;
-	}
-
-	/**
-	 * Téléport le personnage à cette localisation
-	 */
-	public void moveTo(Vector2d d) {
-		coord.set(d);
-		nodes.clear();
-		updatePosition();
 	}
 
 	/**

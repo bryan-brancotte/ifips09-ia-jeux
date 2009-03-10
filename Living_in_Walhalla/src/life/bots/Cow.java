@@ -6,11 +6,7 @@ import java.util.Random;
 
 import life.ICharacter;
 import life.ITeam;
-
-
-import aStar2D.AStarMultiThread;
 import aStar2D.Node;
-import applets.BattleField;
 
 public class Cow extends ICharacter {
 
@@ -32,8 +28,8 @@ public class Cow extends ICharacter {
 		}
 	};
 
-	public Cow(BattleField battleField, AStarMultiThread star, Node startupPosition, Node[] waypoints) {
-		super(battleField, star, startupPosition, nature);
+	public Cow(Node startupPosition, Node[] waypoints) {
+		super(startupPosition, nature);
 		this.waypoints = waypoints;
 		updatePosition();
 		journeyDone();
@@ -46,7 +42,7 @@ public class Cow extends ICharacter {
 
 	@Override
 	public float getSpeed() {
-		return 1F;
+		return 0.5F;
 	}
 
 	@Override

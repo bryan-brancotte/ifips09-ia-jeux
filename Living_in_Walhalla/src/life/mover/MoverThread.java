@@ -5,7 +5,6 @@ import java.util.concurrent.Semaphore;
 
 import life.IMover;
 
-
 public class MoverThread extends Thread {
 
 	protected int timeStep;
@@ -13,8 +12,6 @@ public class MoverThread extends Thread {
 	protected LinkedList<IMover> movers;
 	protected Semaphore verrou = new Semaphore(1);
 	protected IMover itsDead = null;
-	static long ok = 0;
-	static long all = 0;
 
 	@Override
 	public void run() {
@@ -34,17 +31,12 @@ public class MoverThread extends Thread {
 				itsDead = null;
 			}
 			verrou.release();
-			all++;
 			try {
 				l += timeStep - System.currentTimeMillis();
 				// selon les mesure, le temps d'endormir et reveillez un thread
 				// coute une 1 ms
-				if (l > 2) {
-					ok++;
+				if (l > 2)
 					Thread.sleep(l);
-				}
-				if (all % 100 == 0)
-					System.out.println(ok + " / " + all + "% : " + (ok * 100F / all) + "%");
 			} catch (InterruptedException e) {
 			}
 		}

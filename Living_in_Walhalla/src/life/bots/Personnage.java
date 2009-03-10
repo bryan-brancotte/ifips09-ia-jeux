@@ -5,11 +5,7 @@ import java.awt.Graphics;
 
 import life.ICharacter;
 import life.ITeam;
-
-
-import aStar2D.AStarMultiThread;
 import aStar2D.Node;
-import applets.BattleField;
 
 public class Personnage extends ICharacter {
 
@@ -17,8 +13,8 @@ public class Personnage extends ICharacter {
 
 	protected Color myColor;
 
-	public Personnage(BattleField battleField, AStarMultiThread star, Color color, String name, ITeam team) {
-		super(battleField, star, new Node(10,100),team);
+	public Personnage(Color color, String name, ITeam team) {
+		super(new Node(10, 100), team);
 		this.name = name;
 		this.myColor = color;
 	}
@@ -48,7 +44,7 @@ public class Personnage extends ICharacter {
 
 	@Override
 	public float getSpeed() {
-		return 3F;
+		return 1.5F;
 	}
 
 	@Override
