@@ -2,6 +2,7 @@ package life.munition;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.util.Iterator;
 
 import life.IMover;
 import life.ITeam;
@@ -51,6 +52,25 @@ public class Bullet implements IMover {
 		tmp.setSum(coord, vectSpeed);
 		iAmDead |= !battleField.surface.canSee(coord, tmp);
 		coord.set(tmp);
+		Iterator<IMover> itM = battleField.getMoverToDraw();
+		IMover mover;
+		while (itM.hasNext()) {
+			mover = itM.next();
+			if (mover.getCoord().distance(coord) < (mover.getRadius() + this.getRadius())) {
+				iAmDead = true;
+				// mover.hit(this);
+			}
+		}
 		return true;
+	}
+
+	@Override
+	public float getRadius() {
+		return 0.5F;
+	}
+
+	@Override
+	public Vector2d getCoord() {
+		return coord;
 	}
 }

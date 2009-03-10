@@ -51,8 +51,6 @@ public abstract class ICharacter implements IMover {
 
 	public abstract String getName();
 
-	public abstract float botRadius();
-
 	public abstract void drawCharacter(Graphics g);
 
 	public void draw(Graphics g) {
@@ -61,6 +59,8 @@ public abstract class ICharacter implements IMover {
 		// g.drawOval((int) n.x - 2, (int) (n.y - 2), 4, 4);
 		// }
 		// nodesLocker.release();
+		// g.drawOval((int) coord.x - MAX_DST, (int) (coord.y - MAX_DST),
+		// MAX_DST << 1, MAX_DST << 1);
 		drawCharacter(g);
 	}
 

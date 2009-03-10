@@ -36,13 +36,13 @@ public class Cow extends ICharacter {
 	}
 
 	@Override
-	public float botRadius() {
+	public float getRadius() {
 		return 5;
 	}
 
 	@Override
 	public float getSpeed() {
-		return 0.5F;
+		return 0.2F;
 	}
 
 	@Override
@@ -52,16 +52,16 @@ public class Cow extends ICharacter {
 		int x = (int) coord.x;
 		int y = (int) coord.y;
 		g.setColor(Color.white);
-		g.fillPolygon(new int[] { x - (int) botRadius(), x - 2, x + 2, x + (int) botRadius() }, new int[] {
-				y - (int) botRadius(), y + (int) botRadius(), y + (int) botRadius(), y - (int) botRadius() }, 4);
+		g.fillPolygon(new int[] { x - (int) getRadius(), x - 2, x + 2, x + (int) getRadius() }, new int[] {
+				y - (int) getRadius(), y + (int) getRadius(), y + (int) getRadius(), y - (int) getRadius() }, 4);
 		g.setColor(Color.yellow);
-		g.fillRect(x - 2 + (int) botRadius(), (int) (y - botRadius() - 2), 2, 2);
-		g.fillRect((int) (x - botRadius()), (int) (y - botRadius() - 2), 2, 2);
+		g.fillRect(x - 2 + (int) getRadius(), (int) (y - getRadius() - 2), 2, 2);
+		g.fillRect((int) (x - getRadius()), (int) (y - getRadius() - 2), 2, 2);
 		g.setColor(Color.black);
-		g.drawLine(x - (int) botRadius() + 2, y + 2 - (int) botRadius(), x - (int) botRadius() + 3, y + 2
-				- (int) botRadius());
-		g.drawLine(x + (int) botRadius() - 2, y + 2 - (int) botRadius(), x + (int) botRadius() - 3, y + 2
-				- (int) botRadius());
+		g.drawLine(x - (int) getRadius() + 2, y + 2 - (int) getRadius(), x - (int) getRadius() + 3, y + 2
+				- (int) getRadius());
+		g.drawLine(x + (int) getRadius() - 2, y + 2 - (int) getRadius(), x + (int) getRadius() - 3, y + 2
+				- (int) getRadius());
 	}
 
 	@Override
