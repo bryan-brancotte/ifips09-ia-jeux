@@ -19,7 +19,6 @@ import life.bots.Cow;
 import life.bots.Personnage;
 import life.mover.MoverManager;
 import life.munition.Bullet;
-
 import surface.Surface;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -62,8 +61,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
 	protected boolean DRAW_PATH = true;
 	protected boolean DRAW_WAYPOINT = false;
-	protected boolean DRAW_CONTROL_MAP = true;
-	protected boolean LEVEL_CREATING = true;
+	protected boolean DRAW_CONTROL_MAP = false;
+	protected boolean LEVEL_CREATING = false;
 	protected int levelCreatingCpt = 0;
 
 	protected MoverManager moverManager;
@@ -105,6 +104,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	private ITeam teamRed;
 	private ITeam teamBlue;
 	private LinkedList<IMover> moverToDraw;
+
 	public Surface surface; // The surface that contains the objects...
 	Node[] waypoints;
 	AStarMultiThread aStar;
@@ -175,9 +175,10 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		IMover m;
 		// moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 5), new
 		// Vector2d(5, 400)));
-//		moverToDraw.add(m);
-//		moverManager.addMovers(m = new Bullet(10, new Vector2d(5, 5), new Vector2d(5, 400)));
-//		moverToDraw.add(m);
+		// moverToDraw.add(m);
+		// moverManager.addMovers(m = new Bullet(10, new Vector2d(5, 5), new
+		// Vector2d(5, 400)));
+		// moverToDraw.add(m);
 		moverManager.addMovers(m = new Bullet(5, new Vector2d(5, 5), new Vector2d(5, 400)));
 		moverToDraw.add(m);
 		moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 5), new Vector2d(55, 400)));
@@ -377,19 +378,19 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			// buffer_canvas.setColor(Color.yellow);
 			int k;
 			for (Node w : waypoints) {
-				if ((k = (int) (1.3*w.getOverCost(teamRed))) < 0) {
+				if ((k = (int) (1.3 * w.getOverCost(teamRed))) < 0) {
 					if (k < -255)
 						buffer_canvas.setColor(Color.red);
 					else
 						buffer_canvas.setColor(new Color(-k, 0, 0));
 					drawDot(buffer_canvas, w, 4);
-				} else if ((k = (int) (1.3*w.getOverCost(teamBlue))) < 0) {
+				} else if ((k = (int) (1.3 * w.getOverCost(teamBlue))) < 0) {
 					if (k < -255)
 						buffer_canvas.setColor(Color.blue);
 					else
 						buffer_canvas.setColor(new Color(0, 0, -k));
 					drawDot(buffer_canvas, w, 4);
-				} else if ((k = (int) (1.3*w.getOverCost(Cow.nature))) < 0) {
+				} else if ((k = (int) (1.3 * w.getOverCost(Cow.nature))) < 0) {
 					if (k < -255)
 						buffer_canvas.setColor(Color.green);
 					else
@@ -518,6 +519,10 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// Simply repaint the battle field... Called every frame...
 	public void update(Graphics g) {
 		paint(g);
+	}
+
+	public java.util.Iterator<IMover> getMoverToDraw() {
+		return moverToDraw.iterator();
 	}
 
 }

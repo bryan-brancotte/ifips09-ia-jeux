@@ -20,7 +20,7 @@ public class Personnage extends ICharacter {
 	}
 
 	@Override
-	public float botRadius() {
+	public float getRadius() {
 		return 3;
 	}
 
@@ -29,10 +29,10 @@ public class Personnage extends ICharacter {
 		int x = (int) coord.x;
 		int y = (int) coord.y;
 		g.setColor(myColor);
-		g.drawLine((int) (x - botRadius()), y, (int) (x + botRadius()), y);
-		g.drawLine(x, (int) (y - botRadius()), x, (int) (y + botRadius()));
-		g.drawOval((int) (coord.x - botRadius()), (int) (coord.y - botRadius()), (int) (botRadius() * 2),
-				(int) (botRadius() * 2));
+		g.drawLine((int) (x - getRadius()), y, (int) (x + getRadius()), y);
+		g.drawLine(x, (int) (y - getRadius()), x, (int) (y + getRadius()));
+		g.drawOval((int) (coord.x - getRadius()), (int) (coord.y - getRadius()), (int) (getRadius() * 2),
+				(int) (getRadius() * 2));
 		g.setColor(Color.black);
 
 	}
@@ -44,7 +44,7 @@ public class Personnage extends ICharacter {
 
 	@Override
 	public float getSpeed() {
-		return 1.5F;
+		return 1F;
 	}
 
 	@Override
