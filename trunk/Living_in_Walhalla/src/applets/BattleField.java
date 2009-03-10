@@ -11,12 +11,14 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
 
+import life.ICharacter;
 import life.IMover;
 import life.ITeam;
 import life.bots.CommonTeam;
 import life.bots.Cow;
 import life.bots.Personnage;
 import life.mover.MoverManager;
+import life.munition.Bullet;
 
 import surface.Surface;
 import utils.Vector2d;
@@ -169,6 +171,17 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to init all your belettes structures.
 	 */
 	public void initBelettes() {
+		Bullet.init(this);
+		IMover m;
+		// moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 5), new
+		// Vector2d(5, 400)));
+//		moverToDraw.add(m);
+//		moverManager.addMovers(m = new Bullet(10, new Vector2d(5, 5), new Vector2d(5, 400)));
+//		moverToDraw.add(m);
+		moverManager.addMovers(m = new Bullet(5, new Vector2d(5, 5), new Vector2d(5, 400)));
+		moverToDraw.add(m);
+		moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 5), new Vector2d(55, 400)));
+		moverToDraw.add(m);
 	}
 
 	/**
@@ -179,18 +192,19 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		teamRed = new CommonTeam("Red");
 		moverToDraw = new LinkedList<IMover>();
 		IMover im;
+		ICharacter.init(this, aStar);
 
-		perso = new Personnage(this, aStar, Color.red, "Florence", teamRed);
-		perso2 = new Personnage(this, aStar, Color.blue, "Bryan", teamBlue);
+		perso = new Personnage(Color.red, "Florence", teamRed);
+		perso2 = new Personnage(Color.blue, "Bryan", teamBlue);
 		perso.setDestination(waypoints[100]);
 		perso2.setDestination(waypoints[300]);
 
-		moverManager = new MoverManager(50, 10);
+		moverManager = new MoverManager(20, 10);
 		moverManager.start();
 		moverManager.addMovers(perso);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 5; i++) {
-			moverManager.addMovers(im = new Cow(this, aStar, waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
+		for (int i = 0; i < 16; i++) {
+			moverManager.addMovers(im = new Cow(waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
 		perso.updatePosition();
@@ -318,7 +332,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		}
 		if (LEVEL_CREATING) {
 			System.out.println("ob.addNode(new Vector2d(" + e.getX() + "F, " + e.getY() + "F));");
-			if (++levelCreatingCpt == 3) {
+			if (++levelCreatingCpt == 4) {
 				levelCreatingCpt = 0;
 				System.out.println("ob.fixObject();");
 				System.out.println("objects.add(ob);");
@@ -363,23 +377,23 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			// buffer_canvas.setColor(Color.yellow);
 			int k;
 			for (Node w : waypoints) {
-				if ((k = (int) (w.getOverCost(teamRed))) < 0) {
-					if (k < -127)
+				if ((k = (int) (1.3*w.getOverCost(teamRed))) < 0) {
+					if (k < -255)
 						buffer_canvas.setColor(Color.red);
 					else
-						buffer_canvas.setColor(new Color((-k) << 1, 0, 0));
+						buffer_canvas.setColor(new Color(-k, 0, 0));
 					drawDot(buffer_canvas, w, 4);
-				} else if ((k = (int) (w.getOverCost(teamBlue))) < 0) {
-					if (k < -127)
+				} else if ((k = (int) (1.3*w.getOverCost(teamBlue))) < 0) {
+					if (k < -255)
 						buffer_canvas.setColor(Color.blue);
 					else
-						buffer_canvas.setColor(new Color(0, 0, (-k) << 1));
+						buffer_canvas.setColor(new Color(0, 0, -k));
 					drawDot(buffer_canvas, w, 4);
-				} else if ((k = (int) (w.getOverCost(Cow.nature))) < 0) {
-					if (k < -127)
+				} else if ((k = (int) (1.3*w.getOverCost(Cow.nature))) < 0) {
+					if (k < -255)
 						buffer_canvas.setColor(Color.green);
 					else
-						buffer_canvas.setColor(new Color(0, (-k) << 1, 0));
+						buffer_canvas.setColor(new Color(0, -k, 0));
 					drawDot(buffer_canvas, w, 4);
 				}
 			}
@@ -390,8 +404,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			// 6. Draw the path
 			PathDrawing(perso);
 			PathDrawing(perso2);
-			for (IMover im : moverToDraw)
-				PathDrawing(im);
+			// for (IMover im : moverToDraw)
+			// PathDrawing(im);
 		}
 		gui_string = "[ FPS : " + (int) (1e9F / (System.nanoTime() - lastTimePaint)) + " ]";
 		lastTimePaint = System.nanoTime();
@@ -405,8 +419,17 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		perso2.draw(buffer_canvas);
 
 		// Draw the bots in their position/direction
-		for (IMover im : moverToDraw)
-			im.draw(buffer_canvas);
+		IMover moverDead = null;
+		for (IMover im : moverToDraw) {
+			if (im.isDead())
+				moverDead = im;
+			else
+				im.draw(buffer_canvas);
+		}
+		if (moverDead != null) {
+			moverToDraw.remove(moverDead);
+			moverDead = null;
+		}
 
 		drawHUD();
 		showbuffer();
@@ -418,7 +441,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		utils.LIFO_Pool.Iterator<Node> itPath = aStar.getPath(perso);
 		Node n, np;
 		boolean directionDone = comportement == BattleFieldBehavior.MOVER;
-		buffer_canvas.setColor(Color.blue);
+		buffer_canvas.setColor(Color.GRAY);
 		np = itPath.next();
 		while (itPath.hasNext()) {
 			n = itPath.next();
