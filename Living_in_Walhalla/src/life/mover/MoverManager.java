@@ -8,9 +8,11 @@ import life.munition.IBullet;
 
 public class MoverManager {
 
+	protected static final int MOVERS = 1;
 	protected LinkedList<MoverThread> moverThreads;
 
-	protected MoverThread bulletThread;
+	protected static final int BULLETS = 2;
+	protected LinkedList<MoverThread> bulletThreads;
 
 	protected Semaphore moverThreadsLocker = new Semaphore(0);
 
@@ -28,22 +30,27 @@ public class MoverManager {
 		super();
 		MoverThread m;
 		this.moverThreads = new LinkedList<MoverThread>();
+		this.bulletThreads = new LinkedList<MoverThread>();
 		// TODO faire un groupe de thread pour les balles et non un seul thread
-		for (int i = 1; i < nbThread; i++) {
-			moverThreads.add(m = new MoverThread(timeStep));
+		for (int i = 2; i < nbThread; i++) {
+			moverThreads.add(m = new MoverThread(timeStep, MOVERS));
 			m.start();
 			m.setPriority(Thread.MIN_PRIORITY);
 		}
-		bulletThread = new MoverThread(timeStep);
-		bulletThread.start();
-		bulletThread.setPriority(Thread.MIN_PRIORITY);
+		for (int i = 2; i < nbThread; i++) {
+			bulletThreads.add(m = new MoverThread(timeStep, BULLETS));
+			m.start();
+			m.setPriority(Thread.NORM_PRIORITY);
+		}
 		moverThreadsLocker.release();
 	}
 
 	public void addMovers(IMover movers) {
 		moverThreadsLocker.acquireUninterruptibly();
 		if (movers instanceof IBullet) {
-			bulletThread.addMovers(movers);
+			MoverThread m = bulletThreads.removeFirst();
+			m.addMovers(movers);
+			moverThreads.addLast(m);
 		} else {
 			MoverThread m = moverThreads.removeFirst();
 			m.addMovers(movers);
@@ -54,14 +61,28 @@ public class MoverManager {
 
 	protected void iHaveLostSomeMovers(MoverThread mt) {
 		moverThreadsLocker.acquireUninterruptibly();
-		if (mt != bulletThread) {
-			MoverThread m = moverThreads.getFirst();
+		MoverThread m;
+		switch (mt.getFamilly()) {
+		case BULLETS:
+			m = moverThreads.getFirst();
 			moverThreads.remove(mt);
 			moverThreads.addFirst(mt);
 			if (mt.movers.size() > m.movers.size()) {
 				moverThreads.removeFirst();
 				moverThreads.addLast(m);
 			}
+			break;
+		case MOVERS:
+			m = moverThreads.getFirst();
+			moverThreads.remove(mt);
+			moverThreads.addFirst(mt);
+			if (mt.movers.size() > m.movers.size()) {
+				moverThreads.removeFirst();
+				moverThreads.addLast(m);
+			}
+			break;
+		default:
+			break;
 		}
 		moverThreadsLocker.release();
 	}

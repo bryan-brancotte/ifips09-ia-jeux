@@ -1,10 +1,8 @@
 package belette;
 
-import utils.*;
+import java.awt.Graphics;
 
-import java.awt.*;
-
-import life.*;
+import utils.Vector2d;
 
 /**
  * Interface pour donner une id�e de ce que l'on peut mettre
