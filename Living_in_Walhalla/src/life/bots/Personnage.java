@@ -9,14 +9,8 @@ import aStar2D.Node;
 
 public class Personnage extends ICharacter {
 
-	protected String name;
-
-	protected Color myColor;
-
-	public Personnage(Color color, String name, ITeam team) {
-		super(new Node(10, 100), team);
-		this.name = name;
-		this.myColor = color;
+	public Personnage(String name, ITeam team) {
+		super(new Node(10, 100), team, name);
 	}
 
 	@Override
@@ -28,7 +22,7 @@ public class Personnage extends ICharacter {
 	public void drawCharacter(Graphics g) {
 		int x = (int) coord.x;
 		int y = (int) coord.y;
-		g.setColor(myColor);
+		g.setColor(team.getColor());
 		g.drawLine((int) (x - getRadius()), y, (int) (x + getRadius()), y);
 		g.drawLine(x, (int) (y - getRadius()), x, (int) (y + getRadius()));
 		g.drawOval((int) (coord.x - getRadius()), (int) (coord.y - getRadius()), (int) (getRadius() * 2),
@@ -59,6 +53,12 @@ public class Personnage extends ICharacter {
 
 	@Override
 	public void hit(int damage) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	protected void canShoot() {
 		// TODO Auto-generated method stub
 		
 	}
