@@ -78,4 +78,9 @@ public class Cow extends ICharacter {
 	public boolean isDead() {
 		return false;
 	}
+
+	@Override
+	public void hit(int damage) {
+//		life -= hitingStuff.getDamage(this);
+	}
 }

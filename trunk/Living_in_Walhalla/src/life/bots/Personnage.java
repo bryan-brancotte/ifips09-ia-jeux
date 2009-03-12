@@ -57,4 +57,10 @@ public class Personnage extends ICharacter {
 		return false;
 	}
 
+	@Override
+	public void hit(int damage) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

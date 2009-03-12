@@ -18,4 +18,6 @@ public interface IMover {
 
 	public Vector2d getCoord();
 
+	public void hit(int damage);
+
 }
