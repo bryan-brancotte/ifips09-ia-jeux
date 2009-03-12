@@ -8,6 +8,7 @@ import life.IMover;
 public class MoverThread extends Thread {
 
 	protected int timeStep;
+	protected int familly;
 	protected boolean dontKillMe = true;
 	protected LinkedList<IMover> movers;
 	protected Semaphore verrou = new Semaphore(1);
@@ -47,10 +48,15 @@ public class MoverThread extends Thread {
 		dontKillMe = false;
 	}
 
-	protected MoverThread(int timeStep) {
+	protected MoverThread(int timeStep, int familly) {
 		super();
 		this.movers = new LinkedList<IMover>();
 		this.timeStep = timeStep;
+		this.familly = familly;
+	}
+
+	public int getFamilly() {
+		return familly;
 	}
 
 	protected void addMovers(IMover movers) {

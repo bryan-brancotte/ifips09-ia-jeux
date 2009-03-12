@@ -59,8 +59,7 @@ public class Bullet implements IBullet {
 		while (itM.hasNext()) {
 			mover = itM.next();
 			if (mover != this && mover.getCoord().distance(coord) < (mover.getRadius() + this.getRadius())) {
-				System.out.println(mover);
-				iAmDead = true;
+				 iAmDead = true;
 				mover.hit(damage);
 			}
 		}

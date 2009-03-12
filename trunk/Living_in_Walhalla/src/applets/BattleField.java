@@ -61,7 +61,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
 	protected boolean DRAW_PATH = true;
 	protected boolean DRAW_WAYPOINT = false;
-	protected boolean DRAW_CONTROL_MAP = false;
+	protected boolean DRAW_CONTROL_MAP = true;
 	protected boolean LEVEL_CREATING = false;
 	protected int levelCreatingCpt = 0;
 

@@ -1,10 +1,8 @@
 package belette;
 
-import utils.*;
+import java.awt.Graphics;
 
-import java.awt.*;
-
-import life.*;
+import utils.Vector2d;
 /**
  * Interface (a modifier suivant vos envies) permettant de g�rer les items dans le jeu
  * 
