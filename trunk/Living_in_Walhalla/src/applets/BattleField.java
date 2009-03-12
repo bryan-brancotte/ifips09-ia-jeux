@@ -10,16 +10,19 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
 import life.ICharacter;
 import life.IMover;
 import life.ITeam;
 import life.bots.CommonTeam;
 import life.bots.Cow;
+import life.bots.Fantassin;
 import life.bots.Personnage;
 import life.mover.MoverManager;
 import life.munition.Bullet;
 import surface.Surface;
+import utils.CodeExecutor;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
 import waypoint.WaypointInstaller;
@@ -63,6 +66,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	protected boolean DRAW_WAYPOINT = false;
 	protected boolean DRAW_CONTROL_MAP = true;
 	protected boolean LEVEL_CREATING = false;
+	protected int TAILLE_TEAM = 8;
 	protected int levelCreatingCpt = 0;
 
 	protected MoverManager moverManager;
@@ -103,6 +107,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 */
 	private ITeam teamRed;
 	private ITeam teamBlue;
+	private Semaphore moverToDrawLocker = new Semaphore(0);
 	private LinkedList<IMover> moverToDraw;
 
 	public Surface surface; // The surface that contains the objects...
@@ -161,6 +166,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		initaStar();
 		initBots();
 		initBelettes();
+		startBots();
 		try {
 			Thread.sleep(200);
 		} catch (InterruptedException e) {
@@ -172,44 +178,55 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 */
 	public void initBelettes() {
 		Bullet.init(this);
-		IMover m;
-		// moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 5), new
-		// Vector2d(5, 400)));
-		// moverToDraw.add(m);
-		// moverManager.addMovers(m = new Bullet(10, new Vector2d(5, 5), new
-		// Vector2d(5, 400)));
-		// moverToDraw.add(m);
-		moverManager.addMovers(m = new Bullet(5, new Vector2d(5, 5), new Vector2d(5, 400)));
-		moverToDraw.add(m);
-		moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 300), new Vector2d(5, 400)));
-		moverToDraw.add(m);
+		addMoverUnsafe(new Bullet(5, new Vector2d(5, 5), new Vector2d(5, 400)));
+		addMoverUnsafe(new Bullet(5, new Vector2d(5, 300), new Vector2d(5, 400)));
 	}
 
 	/**
 	 * Called ones to init all your bots.
 	 */
 	public void initBots() {
-		teamBlue = new CommonTeam("Blue");
-		teamRed = new CommonTeam("Red");
+		teamBlue = new CommonTeam("Blue", Color.blue);
+		teamRed = new CommonTeam("Red", Color.red);
 		moverToDraw = new LinkedList<IMover>();
 		IMover im;
+		ICharacter ic;
 		ICharacter.init(this, aStar);
 
-		perso = new Personnage(Color.red, "Florence", teamRed);
-		perso2 = new Personnage(Color.blue, "Bryan", teamBlue);
-		perso.setDestination(waypoints[100]);
-		perso2.setDestination(waypoints[300]);
-
-		moverManager = new MoverManager(20, 10);
+		moverManager = new MoverManager(40, 10);
 		moverManager.start();
+
+		perso = new Personnage("Florence", teamRed);
 		moverManager.addMovers(perso);
+		perso.setDestination(waypoints[Cow.rand.nextInt(waypoints.length)]);
+		perso2 = new Personnage("Bryan", teamBlue);
+		perso2.setDestination(waypoints[Cow.rand.nextInt(waypoints.length)]);
 		moverManager.addMovers(perso2);
-		for (int i = 0; i < 16; i++) {
+
+		for (int i = 1; i <= TAILLE_TEAM; i++) {
+			ic = new Fantassin(new Node(10, 10 * i), teamRed, "Florence_" + i);
+			moverManager.addMovers(ic);
+			moverToDraw.add(ic);
+			ic = new Fantassin(new Node(viewer_xsize - 10, viewer_ysize - 10 * i), teamBlue, "Bryan_" + i);
+			moverManager.addMovers(ic);
+			moverToDraw.add(ic);
+		}
+
+		for (int i = 0; i < 3; i++) {
 			moverManager.addMovers(im = new Cow(waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
+	}
+
+	public void startBots() {
+		for (IMover im : moverToDraw)
+			if (im instanceof ICharacter) {
+				((ICharacter) im).updatePosition();
+				((ICharacter) im).setDestination(waypoints[Cow.rand.nextInt(waypoints.length)]);
+			}
 		perso.updatePosition();
 		perso2.updatePosition();
+		moverToDrawLocker.release();
 	}
 
 	/**
@@ -405,8 +422,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			// 6. Draw the path
 			PathDrawing(perso);
 			PathDrawing(perso2);
-			// for (IMover im : moverToDraw)
-			// PathDrawing(im);
+			for (IMover im : moverToDraw)
+				PathDrawing(im);
 		}
 		gui_string = "[ FPS : " + (int) (1e9F / (System.nanoTime() - lastTimePaint)) + " ]";
 		lastTimePaint = System.nanoTime();
@@ -521,8 +538,26 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		paint(g);
 	}
 
-	public java.util.Iterator<IMover> getMoverToDraw() {
-		return moverToDraw.iterator();
+	public void iterateOnMoverToDraw(CodeExecutor<IMover> codeEx) {
+		if (!moverToDrawLocker.tryAcquire())
+			return;
+		for (IMover im : moverToDraw) {
+			codeEx.execute(im);
+			if (!codeEx.keepIterat())
+				break;
+		}
+		moverToDrawLocker.release();
 	}
 
+	public void addMover(IMover mover) {
+		if (!moverToDrawLocker.tryAcquire())
+			return;
+		addMoverUnsafe(mover);
+		moverToDrawLocker.release();
+	}
+
+	public void addMoverUnsafe(IMover mover) {
+		moverManager.addMovers(mover);
+		moverToDraw.add(mover);
+	}
 }

@@ -26,10 +26,15 @@ public class Cow extends ICharacter {
 		public boolean isOpposedTo(ITeam team) {
 			return this != team;
 		}
+
+		@Override
+		public Color getColor() {
+			return Color.green;
+		}
 	};
 
 	public Cow(Node startupPosition, Node[] waypoints) {
-		super(startupPosition, nature);
+		super(startupPosition, nature, "Cow");
 		this.waypoints = waypoints;
 		updatePosition();
 		journeyDone();
@@ -65,11 +70,6 @@ public class Cow extends ICharacter {
 	}
 
 	@Override
-	public String getName() {
-		return "A cow";
-	}
-
-	@Override
 	protected void journeyDone() {
 		this.setDestination(waypoints[rand.nextInt(waypoints.length)]);
 	}
@@ -81,6 +81,10 @@ public class Cow extends ICharacter {
 
 	@Override
 	public void hit(int damage) {
-//		life -= hitingStuff.getDamage(this);
+		// life -= hitingStuff.getDamage(this);
+	}
+
+	@Override
+	protected void canShoot() {
 	}
 }

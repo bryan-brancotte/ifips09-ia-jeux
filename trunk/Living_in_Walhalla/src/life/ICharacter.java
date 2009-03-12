@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
+import life.munition.Bullet;
 import utils.Vector2d;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
@@ -24,6 +25,7 @@ public abstract class ICharacter implements IMover {
 	protected Node node = null;
 	protected LinkedList<Node> nodes = null;
 	protected Semaphore nodesLocker = new Semaphore(1);
+	protected ICharacter me = this;
 
 	protected HashSet<Node> nodesBuffer = null;
 
@@ -31,6 +33,10 @@ public abstract class ICharacter implements IMover {
 
 	protected ITeam team;
 	protected int life;
+	protected String name;
+	protected boolean iAmDead = false;
+	private long lastShoot = 0;
+	private boolean canShoot = true;
 
 	public ITeam getTeam() {
 		return team;
@@ -41,16 +47,19 @@ public abstract class ICharacter implements IMover {
 		ICharacter.aStar = aStar;
 	}
 
-	public ICharacter(Node startupPosition, ITeam team) {
+	public ICharacter(Node startupPosition, ITeam team, String name) {
 		super();
 		this.team = team;
 		coord = new Vector2d(startupPosition.x, startupPosition.y);
 		nodes = new LinkedList<Node>();
 		nodesBuffer = new HashSet<Node>();
 		node = null;
+		this.name = name;
 	}
 
-	public abstract String getName();
+	public String getName() {
+		return name;
+	}
 
 	public abstract void drawCharacter(Graphics g);
 
@@ -191,10 +200,28 @@ public abstract class ICharacter implements IMover {
 			nodes.remove(n);
 		nodesBuffer.clear();
 		nodesLocker.release();
+		if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 1e6)))
+			canShoot();
+	}
+
+	protected abstract void canShoot();
+
+	protected void fire(Vector2d target) {
+		System.out.println(name + " tire vers\t" + (int) target.x + "\t" + (int) target.y);
+		if (!canShoot)
+			return;
+		canShoot = false;
+		lastShoot = System.nanoTime();
+		battleField.addMover(new Bullet(5, coord, target));
 	}
 
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	@Override
+	public boolean isDead() {
+		return iAmDead;
 	}
 }

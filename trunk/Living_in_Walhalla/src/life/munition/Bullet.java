@@ -2,10 +2,10 @@ package life.munition;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.util.Iterator;
 
 import life.IMover;
 import life.ITeam;
+import utils.CodeExecutor;
 import utils.Vector2d;
 import applets.BattleField;
 
@@ -16,6 +16,7 @@ public class Bullet implements IBullet {
 	private Vector2d tmp;
 	private boolean iAmDead = false;
 	private int damage = 10;
+	private Bullet me = this;
 
 	protected static BattleField battleField;
 
@@ -54,21 +55,27 @@ public class Bullet implements IBullet {
 		tmp.setSum(coord, vectSpeed);
 		iAmDead |= !battleField.surface.canSee(coord, tmp);
 		coord.set(tmp);
-		Iterator<IMover> itM = battleField.getMoverToDraw();
-		IMover mover;
-		while (itM.hasNext()) {
-			mover = itM.next();
-			if (mover != this && mover.getCoord().distance(coord) < (mover.getRadius() + this.getRadius())) {
-				 iAmDead = true;
-				mover.hit(damage);
+		battleField.iterateOnMoverToDraw(new CodeExecutor<IMover>() {
+
+			@Override
+			public void execute(IMover mover) {
+				if (mover != me && mover.getCoord().distance(coord) < (mover.getRadius() + me.getRadius())) {
+					iAmDead = true;
+					mover.hit(damage);
+				}
 			}
-		}
+
+			@Override
+			public boolean keepIterat() {
+				return true;
+			}
+		});
 		return true;
 	}
 
 	@Override
 	public float getRadius() {
-		return 2F;
+		return 1F;
 	}
 
 	@Override

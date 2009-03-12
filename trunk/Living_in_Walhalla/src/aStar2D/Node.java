@@ -6,7 +6,6 @@ import java.util.concurrent.Semaphore;
 
 import life.IMover;
 import life.ITeam;
-
 import utils.LIFO;
 import utils.Vector2d;
 import utils.LIFO.Iterator;
@@ -162,6 +161,8 @@ public class Node extends Vector2d {
 				oc -= 2;
 		}
 		influentialsLocker.release();
+		if (oc < -14)
+			return -14;
 		return oc;
 	}
 
@@ -175,6 +176,8 @@ public class Node extends Vector2d {
 				oc -= e.getValue();
 		}
 		influentialsLocker.release();
+//		if (oc < -10)
+//			return -10;
 		return oc;
 	}
 

@@ -106,8 +106,8 @@ public class PolylineObject {
 	}
 
 	/**
-	 * Return True if the segment intersects the polyline object. Note: We consider Vector3 as Vector2 vectors only here
-	 * (z=0);
+	 * Return True if the segment intersects the polyline object. Note: We
+	 * consider Vector3 as Vector2 vectors only here (z=0);
 	 * 
 	 * @param pointA
 	 * @param pointB
@@ -117,7 +117,6 @@ public class PolylineObject {
 		float bestLength = -1F;
 		boolean interesects = false;
 		for (int i = 0; i < nbPoints; i++) {
-			// TODO optimisation i + 1 >= nbPoints ? 0 : i + 1 par (i+1)%nbPoints
 			if (twoSegmentsIntersection(pointA, pointB, globalCoordPoints.get(i), globalCoordPoints.get((i + 1)
 					% nbPoints), tmpvect)) {
 				interesects = true;
@@ -177,7 +176,8 @@ public class PolylineObject {
 
 	public void draw(Graphics g) {
 		g.fillPolygon(cachedPolygon);
-		// g.drawPolygon(cachedPolygon.xpoints, cachedPolygon.ypoints, cachedPolygon.npoints);
+		// g.drawPolygon(cachedPolygon.xpoints, cachedPolygon.ypoints,
+		// cachedPolygon.npoints);
 	}
 
 }
