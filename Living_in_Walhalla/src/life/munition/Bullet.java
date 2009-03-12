@@ -9,12 +9,13 @@ import life.ITeam;
 import utils.Vector2d;
 import applets.BattleField;
 
-public class Bullet implements IMover {
+public class Bullet implements IBullet {
 
 	private Vector2d vectSpeed;
 	private Vector2d coord;
 	private Vector2d tmp;
 	private boolean iAmDead = false;
+	private int damage = 10;
 
 	protected static BattleField battleField;
 
@@ -33,7 +34,8 @@ public class Bullet implements IMover {
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.red);
-		g.fillRect((int) coord.x - 2, (int) (coord.y - 2), 4, 4);
+		g.fillRect((int) (coord.x - getRadius()), (int) (coord.y - getRadius()), (int) getRadius() << 1,
+				(int) getRadius() << 1);
 	}
 
 	@Override
@@ -56,9 +58,10 @@ public class Bullet implements IMover {
 		IMover mover;
 		while (itM.hasNext()) {
 			mover = itM.next();
-			if (mover.getCoord().distance(coord) < (mover.getRadius() + this.getRadius())) {
+			if (mover != this && mover.getCoord().distance(coord) < (mover.getRadius() + this.getRadius())) {
+				System.out.println(mover);
 				iAmDead = true;
-				// mover.hit(this);
+				mover.hit(damage);
 			}
 		}
 		return true;
@@ -66,11 +69,16 @@ public class Bullet implements IMover {
 
 	@Override
 	public float getRadius() {
-		return 0.5F;
+		return 2F;
 	}
 
 	@Override
 	public Vector2d getCoord() {
 		return coord;
+	}
+
+	@Override
+	public void hit(int damage) {
+		iAmDead = true;
 	}
 }

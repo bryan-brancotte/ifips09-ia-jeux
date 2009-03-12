@@ -30,6 +30,7 @@ public abstract class ICharacter implements IMover {
 	private boolean journeyDone = false;
 
 	protected ITeam team;
+	protected int life;
 
 	public ITeam getTeam() {
 		return team;

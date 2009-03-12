@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Event;
 import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -182,7 +181,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		// moverToDraw.add(m);
 		moverManager.addMovers(m = new Bullet(5, new Vector2d(5, 5), new Vector2d(5, 400)));
 		moverToDraw.add(m);
-		moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 5), new Vector2d(55, 400)));
+		moverManager.addMovers(m = new Bullet(1, new Vector2d(5, 300), new Vector2d(5, 400)));
 		moverToDraw.add(m);
 	}
 
