@@ -1,5 +1,7 @@
 package lua;
 
+import java.io.IOException;
+
 public class TestLua {
 
 	private int _myValue1;
@@ -8,8 +10,9 @@ public class TestLua {
 	private LuaScriptLoader _myscript;
 	
 	public TestLua() {
-		_myscript = new LuaScriptLoader("lua/testLua.lua");
-		_myscript.runLuaFunction("initValues", this);
+		_myscript = new LuaScriptLoader("ressources/lua/testLua.lua");
+		_myscript.loadLuaFunction("initValues");
+		_myscript.addObjectAsParameter(this);
 	}
 	
 	/**
@@ -17,8 +20,15 @@ public class TestLua {
 	 */
 	public static void main(String[] args) {
 		TestLua myTest = new TestLua();
-		myTest.displayMyself();
+		myTest.testMyself();
 		myTest.clean();
+	}
+
+	public void testMyself() {
+		_myscript.callFunction(1, 3);
+		_myscript.getResults(3);
+		//_myscript.runLuaFunction("initValues", this);	
+		displayMyself();
 	}
 
 	public void setValue1(int v){
