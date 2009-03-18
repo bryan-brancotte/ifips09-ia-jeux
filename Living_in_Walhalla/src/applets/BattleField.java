@@ -21,6 +21,7 @@ import life.bots.Fantassin;
 import life.bots.Personnage;
 import life.mover.MoverManager;
 import life.munition.Bullet;
+import life.munition.IBullet;
 import surface.Surface;
 import utils.CodeExecutor;
 import utils.Vector2d;
@@ -62,11 +63,11 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// deduced)
 	private static final long serialVersionUID = 1L;
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
-	protected boolean DRAW_PATH = true;
+	protected boolean DRAW_PATH = false;
 	protected boolean DRAW_WAYPOINT = false;
-	protected boolean DRAW_CONTROL_MAP = true;
+	protected boolean DRAW_CONTROL_MAP = false;
 	protected boolean LEVEL_CREATING = false;
-	protected int TAILLE_TEAM = 8;
+	protected int TAILLE_TEAM = 2;
 	protected int levelCreatingCpt = 0;
 
 	protected MoverManager moverManager;
@@ -108,7 +109,10 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	private ITeam teamRed;
 	private ITeam teamBlue;
 	private Semaphore moverToDrawLocker = new Semaphore(0);
+	private Semaphore bulletToDrawLocker = new Semaphore(1);
 	private LinkedList<IMover> moverToDraw;
+	private LinkedList<IMover> bulletToDraw;
+	// private Collection<IMover> moverToDrawSafe;
 
 	public Surface surface; // The surface that contains the objects...
 	Node[] waypoints;
@@ -178,8 +182,10 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 */
 	public void initBelettes() {
 		Bullet.init(this);
-		addMoverUnsafe(new Bullet(5, new Vector2d(5, 5), new Vector2d(5, 400)));
-		addMoverUnsafe(new Bullet(5, new Vector2d(5, 300), new Vector2d(5, 400)));
+		// addMoverUnsafe(new Bullet(5, new Vector2d(5, 5), new Vector2d(5,
+		// 400)));
+		// addMoverUnsafe(new Bullet(5, new Vector2d(5, 300), new Vector2d(5,
+		// 400)));
 	}
 
 	/**
@@ -189,6 +195,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		teamBlue = new CommonTeam("Blue", Color.blue);
 		teamRed = new CommonTeam("Red", Color.red);
 		moverToDraw = new LinkedList<IMover>();
+		bulletToDraw = new LinkedList<IMover>();
+		// moverToDrawSafe = Collections.synchronizedCollection(moverToDraw);
 		IMover im;
 		ICharacter ic;
 		ICharacter.init(this, aStar);
@@ -207,6 +215,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			ic = new Fantassin(new Node(10, 10 * i), teamRed, "Florence_" + i);
 			moverManager.addMovers(ic);
 			moverToDraw.add(ic);
+			// TODO tdh player
 			ic = new Fantassin(new Node(viewer_xsize - 10, viewer_ysize - 10 * i), teamBlue, "Bryan_" + i);
 			moverManager.addMovers(ic);
 			moverToDraw.add(ic);
@@ -539,25 +548,50 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	}
 
 	public void iterateOnMoverToDraw(CodeExecutor<IMover> codeEx) {
-		if (!moverToDrawLocker.tryAcquire())
-			return;
-		for (IMover im : moverToDraw) {
-			codeEx.execute(im);
-			if (!codeEx.keepIterat())
-				break;
+		// moverToDrawLocker.acquireUninterruptibly();
+		if (moverToDrawLocker.tryAcquire()) {
+//			System.out.println("Beg" + Thread.currentThread().hashCode());
+			for (IMover im : moverToDraw) {
+				codeEx.execute(im);
+				if (!codeEx.keepIterat()) {
+//					System.out.println("Brk" + Thread.currentThread().hashCode());
+					break;
+				}
+			}
+//			System.out.println("End" + Thread.currentThread().hashCode());
+			moverToDrawLocker.release();
 		}
-		moverToDrawLocker.release();
+		if (codeEx.keepIterat() && bulletToDrawLocker.tryAcquire()) {
+			// System.out.println("Beg" + Thread.currentThread().hashCode());
+			for (IMover im : bulletToDraw) {
+				codeEx.execute(im);
+				if (!codeEx.keepIterat()) {
+					// System.out.println("Brk" +
+					// Thread.currentThread().hashCode());
+					break;
+				}
+			}
+			// System.out.println("End" + Thread.currentThread().hashCode());
+			bulletToDrawLocker.release();
+		}
 	}
 
 	public void addMover(IMover mover) {
-		if (!moverToDrawLocker.tryAcquire())
-			return;
-		addMoverUnsafe(mover);
+		System.out.println("Adding a Mover");
+		moverToDrawLocker.acquireUninterruptibly();
+		// if (!moverToDrawLocker.tryAcquire())
+		// return;
+		// addMoverUnsafe(mover);
+		moverManager.addMovers(mover);
+		moverToDraw.add(mover);
 		moverToDrawLocker.release();
 	}
 
-	public void addMoverUnsafe(IMover mover) {
+	public void addMover(IBullet mover) {
+		System.out.println("Adding a Bullet");
+		bulletToDrawLocker.acquireUninterruptibly();
 		moverManager.addMovers(mover);
-		moverToDraw.add(mover);
+		bulletToDraw.add(mover);
+		bulletToDrawLocker.release();
 	}
 }
