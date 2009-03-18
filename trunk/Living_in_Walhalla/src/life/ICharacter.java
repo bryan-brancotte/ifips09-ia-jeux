@@ -35,7 +35,7 @@ public abstract class ICharacter implements IMover {
 	protected int life;
 	protected String name;
 	protected boolean iAmDead = false;
-	private long lastShoot = 0;
+	private long lastShoot = System.nanoTime() + 2000000000;
 	private boolean canShoot = true;
 
 	public ITeam getTeam() {
@@ -160,48 +160,51 @@ public abstract class ICharacter implements IMover {
 	public void updatePosition() {
 		if (!nodesLocker.tryAcquire())
 			return;
-		if (nodes.size() == 0) {
-			for (Node n : battleField.getWaypoint())
-				nodes.add(n);
-			node = null;
-		} else {
-			utils.LIFO.Iterator<Link> itN;
-			Node tmp;
+		try {
+			if (nodes.size() == 0) {
+				for (Node n : battleField.getWaypoint())
+					nodes.add(n);
+				node = null;
+			} else {
+				utils.LIFO.Iterator<Link> itN;
+				Node tmp;
+				for (Node n : nodes) {
+					itN = n.getNeighbor();
+					while (itN.hasNext()) {
+						tmp = itN.next().getNode();
+						if (!nodesBuffer.contains(tmp) && !nodes.contains(tmp))
+							nodesBuffer.add(tmp);
+					}
+				}
+				for (Node n : nodesBuffer)
+					nodes.add(n);
+				nodesBuffer.clear();
+			}
+			if (node == null)
+				node = nodes.getFirst();
+			float costTmp;
+			float cost = node.distance(coord);
 			for (Node n : nodes) {
-				itN = n.getNeighbor();
-				while (itN.hasNext()) {
-					tmp = itN.next().getNode();
-					if (!nodesBuffer.contains(tmp) && !nodes.contains(tmp))
-						nodesBuffer.add(tmp);
+				if ((costTmp = n.distance(coord)) < cost) {
+					node = n;
+					cost = costTmp;
+				}
+				if (costTmp > MAX_DST || !battleField.surface.canSee(coord, n)) {
+					nodesBuffer.add(n);
+					n.setInfluence(this, 0);
+				} else {
+					costTmp -= MAX_DST;
+					n.setInfluence(this, -costTmp);
 				}
 			}
 			for (Node n : nodesBuffer)
-				nodes.add(n);
+				nodes.remove(n);
 			nodesBuffer.clear();
+			nodesLocker.release();
+		} finally {
+			if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 2e9)))
+				canShoot();
 		}
-		if (node == null)
-			node = nodes.getFirst();
-		float costTmp;
-		float cost = node.distance(coord);
-		for (Node n : nodes) {
-			if ((costTmp = n.distance(coord)) < cost) {
-				node = n;
-				cost = costTmp;
-			}
-			if (costTmp > MAX_DST || !battleField.surface.canSee(coord, n)) {
-				nodesBuffer.add(n);
-				n.setInfluence(this, 0);
-			} else {
-				costTmp -= MAX_DST;
-				n.setInfluence(this, -costTmp);
-			}
-		}
-		for (Node n : nodesBuffer)
-			nodes.remove(n);
-		nodesBuffer.clear();
-		nodesLocker.release();
-		if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 1e6)))
-			canShoot();
 	}
 
 	protected abstract void canShoot();

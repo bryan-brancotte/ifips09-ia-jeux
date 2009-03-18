@@ -58,8 +58,9 @@ public class Fantassin extends ICharacter {
 
 			@Override
 			public void execute(IMover param) {
-//				System.out.println(name + " canShoot " + param);
-				if (param.getTeam().isOpposedTo(me.getTeam())) {
+				// System.out.println(name + " canShoot " + param);
+				if (param.getTeam() != null && param.getTeam().isOpposedTo(me.getTeam())
+						&& battleField.surface.canSee(param.getCoord(), me.getCoord())) {
 					fire(param.getCoord());
 					keepIterat = false;
 				}

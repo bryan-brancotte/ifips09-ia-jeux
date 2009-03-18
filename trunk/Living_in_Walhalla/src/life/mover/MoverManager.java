@@ -50,7 +50,7 @@ public class MoverManager {
 		if (movers instanceof IBullet) {
 			MoverThread m = bulletThreads.removeFirst();
 			m.addMovers(movers);
-			moverThreads.addLast(m);
+			bulletThreads.addLast(m);
 		} else {
 			MoverThread m = moverThreads.removeFirst();
 			m.addMovers(movers);
