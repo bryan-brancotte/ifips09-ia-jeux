@@ -79,6 +79,16 @@ public class Vector2d {
 		/**/
 	}
 
+	/**
+	 * distance du point courant au point passé en paramètre
+	 * 
+	 * @param that
+	 * @return
+	 */
+	public float distanceCarre(Vector2d that) {
+		return (x - that.x) * (x - that.x) + (y * that.y) * (y * that.y);
+	}
+
 	public float norme() {
 		// return (float) Math.sqrt((x - that.x) * (x - that.x) + (y * that.y) *
 		// (y * that.y));/*

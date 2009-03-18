@@ -8,10 +8,10 @@ import life.ITeam;
 import utils.CodeExecutor;
 import aStar2D.Node;
 
-public class Fantassin extends ICharacter {
+public class Tank extends ICharacter {
 	public static int MY_LIFE = 100;
 
-	public Fantassin(Node startupPosition, ITeam team, String name) {
+	public Tank(Node startupPosition, ITeam team, String name) {
 		super(startupPosition, team, name);
 		life = getInitialLife();
 	}
@@ -36,8 +36,6 @@ public class Fantassin extends ICharacter {
 
 	@Override
 	protected void journeyDone() {
-		// TODO fantassin journeyDone
-
 	}
 
 	@Override

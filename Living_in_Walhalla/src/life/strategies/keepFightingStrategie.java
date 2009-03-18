@@ -69,8 +69,10 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 						}
 					}
 					cpt = 0;
-					System.out.println("Target for " + myTeam.getName() + " :\t" + targets[0].n + " with "
-							+ targets[0].cost + "\twhois " + targets[0].n.getOverCost(myTeam));
+					// System.out.println("Target for " + myTeam.getName() +
+					// " :\t" + targets[0].n + " with "
+					// + targets[0].cost + "\twhois " +
+					// targets[0].n.getOverCost(myTeam));
 					for (NodeTarget nt : targets) {
 						myTeam.attack(nt.n, 1);
 					}

@@ -3,6 +3,8 @@ package life;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import utils.Vector2d;
+
 import aStar2D.Node;
 
 public interface ITeam {
@@ -22,5 +24,7 @@ public interface ITeam {
 	public void attack(Node target, int qte);
 
 	public int getCountFighter();
+
+	public boolean isNotFriendlyFire(IMover shooter, Vector2d dest);
 
 }

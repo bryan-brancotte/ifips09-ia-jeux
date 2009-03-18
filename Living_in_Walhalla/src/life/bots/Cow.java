@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Random;
 
+import utils.Vector2d;
+
 import life.ICharacter;
+import life.IMover;
 import life.ITeam;
 import aStar2D.Node;
 
@@ -53,6 +56,11 @@ public class Cow extends ICharacter {
 		@Override
 		public int getCountFighter() {
 			return 0;
+		}
+
+		@Override
+		public boolean isNotFriendlyFire(IMover shooter, Vector2d dest) {
+			return true;			
 		}
 	};
 
