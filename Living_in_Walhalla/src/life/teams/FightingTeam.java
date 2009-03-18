@@ -1,4 +1,4 @@
-package life.bots;
+package life.teams;
 
 import java.awt.Color;
 import java.awt.Graphics;
@@ -7,12 +7,14 @@ import java.util.ArrayList;
 import life.ICharacter;
 import life.IStrategie;
 import life.ITeam;
+import aStar2D.Node;
 
 public class FightingTeam implements ITeam {
 
 	private String name;
 	private Color color;
 	protected ArrayList<ICharacter> players;
+	protected int idPLayer;
 	protected IStrategie strategie;
 
 	public FightingTeam(String name, Color color, IStrategie strategie) {
@@ -61,5 +63,23 @@ public class FightingTeam implements ITeam {
 		for (ICharacter c : players)
 			g.fillRect(x += 6, y + 1, 5, (int) ((float) c.getLife() / c.getInitialLife() * heigth - 3));
 		return players.size() * 6 + 2;
+	}
+
+	@Override
+	public void newOrders() {
+		idPLayer = 0;
+	}
+
+	@Override
+	public void attack(Node target, int qte) {
+		for (; idPLayer < players.size() && qte-- != 0; idPLayer++) {
+			players.get(idPLayer).setDestination(target);
+		}
+
+	}
+
+	@Override
+	public int getCountFighter() {
+		return players.size();
 	}
 }

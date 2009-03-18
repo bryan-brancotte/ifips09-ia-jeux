@@ -1,7 +1,9 @@
-package life.bots;
+package life.teams;
 
 import java.awt.Color;
 import java.awt.Graphics;
+
+import aStar2D.Node;
 
 import life.ICharacter;
 import life.ITeam;
@@ -38,6 +40,19 @@ public class CommonTeam implements ITeam {
 
 	@Override
 	public int draw(Graphics g, int x, int y, int heigth) {
+		return 0;
+	}
+
+	@Override
+	public void attack(Node target, int qte) {
+	}
+
+	@Override
+	public void newOrders() {		
+	}
+
+	@Override
+	public int getCountFighter() {
 		return 0;
 	}
 

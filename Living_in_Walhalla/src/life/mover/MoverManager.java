@@ -31,12 +31,12 @@ public class MoverManager {
 		MoverThread m;
 		this.moverThreads = new LinkedList<MoverThread>();
 		this.bulletThreads = new LinkedList<MoverThread>();
-		for (int i = 2; i < nbThread; i++) {
+		for (int i = 3; i < nbThread; i++) {
 			moverThreads.add(m = new MoverThread(timeStep, MOVERS));
 			m.start();
 			m.setPriority(Thread.MIN_PRIORITY);
 		}
-		for (int i = 2; i < nbThread; i++) {
+		for (int i = 0; i < 3; i++) {
 			bulletThreads.add(m = new MoverThread(timeStep, BULLETS));
 			m.start();
 			m.setPriority(Thread.NORM_PRIORITY);

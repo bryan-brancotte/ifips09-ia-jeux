@@ -3,6 +3,8 @@ package life;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import aStar2D.Node;
+
 import utils.Vector2d;
 
 public interface IMover {
@@ -18,6 +20,8 @@ public interface IMover {
 	public float getRadius();
 
 	public Vector2d getCoord();
+
+	public Node getNode();
 
 	public void hit(int damage);
 

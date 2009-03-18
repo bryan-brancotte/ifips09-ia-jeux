@@ -41,6 +41,19 @@ public class Cow extends ICharacter {
 		public int draw(Graphics g, int x, int y, int heigth) {
 			return 0;
 		}
+
+		@Override
+		public void attack(Node target, int qte) {
+		}
+
+		@Override
+		public void newOrders() {
+		}
+
+		@Override
+		public int getCountFighter() {
+			return 0;
+		}
 	};
 
 	public Cow(Node startupPosition, Node[] waypoints) {

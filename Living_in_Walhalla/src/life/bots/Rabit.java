@@ -5,7 +5,6 @@ import java.awt.Graphics;
 import java.util.Random;
 
 import life.ICharacter;
-import life.ITeam;
 import aStar2D.Node;
 
 public class Rabit extends ICharacter {
@@ -14,37 +13,8 @@ public class Rabit extends ICharacter {
 	private Node[] waypoints;
 	public static Random rand = new Random();
 
-	/**
-	 * L'équipe des vaches : la nature. P.S: elle aime personne...
-	 */
-	public static ITeam nature = new ITeam() {
-		@Override
-		public String getName() {
-			return "nature";
-		}
-
-		@Override
-		public boolean isOpposedTo(ITeam team) {
-			return this != team;
-		}
-
-		@Override
-		public Color getColor() {
-			return Color.green;
-		}
-
-		@Override
-		public void registerPlayer(ICharacter character) {
-		}
-
-		@Override
-		public int draw(Graphics g, int x, int y, int heigth) {
-			return 0;
-		}
-	};
-
 	public Rabit(Node startupPosition, Node[] waypoints) {
-		super(startupPosition, nature, "Rabit");
+		super(startupPosition, Cow.nature, "Rabit");
 		this.waypoints = waypoints;
 		updatePosition();
 		journeyDone();

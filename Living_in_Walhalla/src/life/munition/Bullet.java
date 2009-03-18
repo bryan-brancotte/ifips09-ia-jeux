@@ -7,6 +7,7 @@ import life.IMover;
 import life.ITeam;
 import utils.CodeExecutor;
 import utils.Vector2d;
+import aStar2D.Node;
 import applets.BattleField;
 
 public class Bullet implements IBullet {
@@ -91,5 +92,10 @@ public class Bullet implements IBullet {
 	@Override
 	public Color getColor() {
 		return Color.black;
+	}
+
+	@Override
+	public Node getNode() {
+		return null;
 	}
 }
