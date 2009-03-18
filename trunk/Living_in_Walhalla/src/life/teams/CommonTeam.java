@@ -3,9 +3,12 @@ package life.teams;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import utils.Vector2d;
+
 import aStar2D.Node;
 
 import life.ICharacter;
+import life.IMover;
 import life.ITeam;
 
 public class CommonTeam implements ITeam {
@@ -48,12 +51,17 @@ public class CommonTeam implements ITeam {
 	}
 
 	@Override
-	public void newOrders() {		
+	public void newOrders() {
 	}
 
 	@Override
 	public int getCountFighter() {
 		return 0;
+	}
+
+	@Override
+	public boolean isNotFriendlyFire(IMover shooter, Vector2d dest) {
+		return true;
 	}
 
 }

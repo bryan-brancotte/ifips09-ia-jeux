@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
+import utils.Vector2d;
+
 import life.ICharacter;
+import life.IMover;
 import life.IStrategie;
 import life.ITeam;
 import aStar2D.Node;
@@ -81,5 +84,19 @@ public class FightingTeam implements ITeam {
 	@Override
 	public int getCountFighter() {
 		return players.size();
+	}
+
+	@Override
+	public boolean isNotFriendlyFire(IMover shooter, Vector2d dest) {
+		float dstCarre = shooter.getCoord().distanceCarre(dest);
+		dstCarre *= dstCarre;
+		for (ICharacter c : players)
+			if (shooter != c
+					&& (c.getRadius() * c.getRadius() * 2 < c.getCoord().distanceCarre(dest)
+							+ c.getCoord().distanceCarre(shooter.getCoord()) - dstCarre)) {
+//				System.out.println("Friendly fire avoided from " + shooter + " to " + c);
+				return false;
+			}
+		return true;
 	}
 }
