@@ -153,17 +153,16 @@ public class Node extends Vector2d {
 
 	public float getOverCost(IMover forWho) {
 		float oc = 0F;
-		float oc2 = 0F;
 		influentialsLocker.acquireUninterruptibly();
 		for (Entry<IMover, Float> e : influentials.entrySet()) {
-			//oc2 += lua.LuaFunctionManager.determineOverCost(forWho, e);
+			// oc2 += lua.LuaFunctionManager.determineOverCost(forWho, e);
 			if (e.getKey().getTeam().isOpposedTo(forWho.getTeam()))
 				oc += e.getValue();
 			else if (forWho != e.getKey())
 				oc -= 2;
 		}
 		influentialsLocker.release();
-		//if(oc != oc2) System.out.println("1 : "+oc+" => "+oc2);
+		// if(oc != oc2) System.out.println("1 : "+oc+" => "+oc2);
 		if (oc < -14)
 			return -14;
 		return oc;
@@ -171,11 +170,10 @@ public class Node extends Vector2d {
 
 	public float getOverCost(ITeam forWho) {
 		float oc = 0F;
-		float oc2 = 0F;
-		
+
 		influentialsLocker.acquireUninterruptibly();
 		for (Entry<IMover, Float> e : influentials.entrySet()) {
-			//oc2 += lua.LuaFunctionManager.determineOverCost(forWho, e);
+			// oc2 += lua.LuaFunctionManager.determineOverCost(forWho, e);
 			if (e.getKey().getTeam().isOpposedTo(forWho))
 				oc += e.getValue();
 			else
@@ -183,10 +181,10 @@ public class Node extends Vector2d {
 
 		}
 		influentialsLocker.release();
-		//if(oc != oc2) System.out.println("2 : "+oc+" => "+oc2);
-		
-//		if (oc < -10)
-//			return -10;
+		// if(oc != oc2) System.out.println("2 : "+oc+" => "+oc2);
+
+		// if (oc < -10)
+		// return -10;
 		return oc;
 	}
 
