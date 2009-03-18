@@ -1,5 +1,6 @@
 package life;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -155,7 +156,7 @@ public abstract class ICharacter implements IMover {
 			updatePosition();
 			return norme < getSpeed() / 10;
 		} finally {
-			if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 2e9)))
+			if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 1e9)))
 				canShoot();
 		}
 	}
@@ -242,5 +243,10 @@ public abstract class ICharacter implements IMover {
 		iAmDead |= ((life -= damage) < 0);
 		if (iAmDead)
 			System.out.println(this.getName() + " is dead !");
+	}
+
+	@Override
+	public Color getColor() {
+		return team.getColor();
 	}
 }

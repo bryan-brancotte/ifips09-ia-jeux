@@ -87,4 +87,9 @@ public class Bullet implements IBullet {
 	public void hit(int damage) {
 		iAmDead = true;
 	}
+
+	@Override
+	public Color getColor() {
+		return Color.black;
+	}
 }

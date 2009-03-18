@@ -64,11 +64,11 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// size in pixels (in x, the y is automatically deduced)
 	private static final long serialVersionUID = 1L;
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
-	protected boolean DRAW_PATH = false;
-	protected boolean DRAW_WAYPOINT = false;
-	protected boolean DRAW_CONTROL_MAP = false;
-	protected boolean LEVEL_CREATING = false;
-	protected int TAILLE_TEAM = 8;
+	protected final int DRAW_PATH = 2;
+	protected final boolean DRAW_WAYPOINT = false;
+	protected final boolean DRAW_CONTROL_MAP = false;
+	protected final boolean LEVEL_CREATING = false;
+	public final int TAILLE_TEAM = 8;
 	protected int levelCreatingCpt = 0;
 
 	protected MoverManager moverManager;
@@ -198,8 +198,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to init all your bots.
 	 */
 	public void initBots() {
-		teamBlue = new FightingTeam("Blue", Color.blue,new keepFightingStrategie(this));
-		teamRed = new FightingTeam("Red", Color.red,new keepFightingStrategie(this));
+		teamBlue = new FightingTeam("Blue", Color.blue, new keepFightingStrategie(this));
+		teamRed = new FightingTeam("Red", Color.red, new keepFightingStrategie(this));
 		moverToDraw = new LinkedList<IMover>();
 		bulletToDraw = new LinkedList<IMover>();
 		IMover im;
@@ -441,13 +441,22 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		}
 
 		// Draw the Path
-		if (DRAW_PATH) {
+		if (DRAW_PATH > 0) {
 			// 6. Draw the path
-			for (IMover im : moverToDraw)
-				PathDrawing(im);
+			switch (DRAW_PATH) {
+			case 1:
+				PathDrawing(perso);
+				PathDrawing(perso2);
+				break;
+			case 2:
+				PathDrawing(moverToDraw.get(3));
+				break;
+			default:
+				for (IMover im : moverToDraw)
+					PathDrawing(im);
+				break;
+			}
 		}
-		PathDrawing(perso);
-		PathDrawing(perso2);
 		gui_string = "[ FPS : " + (int) (1e9F / (System.nanoTime() - lastTimePaint)) + " ]";
 		lastTimePaint = System.nanoTime();
 
@@ -497,7 +506,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		utils.LIFO_Pool.Iterator<Node> itPath = aStar.getPath(perso);
 		Node n, np;
 		boolean directionDone = comportement == BattleFieldBehavior.MOVER;
-		buffer_canvas.setColor(Color.GRAY);
+		buffer_canvas.setColor(perso.getColor().darker().darker().darker() );
 		np = itPath.next();
 		while (itPath.hasNext()) {
 			n = itPath.next();
