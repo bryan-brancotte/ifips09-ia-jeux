@@ -98,4 +98,9 @@ public class Cow extends ICharacter {
 	public int getInitialLife() {
 		return MY_LIFE;
 	}
+
+	@Override
+	public Color getColor() {
+		return nature.getColor();
+	}
 }
