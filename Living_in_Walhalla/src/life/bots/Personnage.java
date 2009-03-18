@@ -47,20 +47,20 @@ public class Personnage extends ICharacter {
 
 	@Override
 	public boolean isDead() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void hit(int damage) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	protected void canShoot() {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public int getInitialLife() {
+		return 0;
 	}
 
 }

@@ -8,8 +8,8 @@ import life.ICharacter;
 import life.ITeam;
 import aStar2D.Node;
 
-public class Cow extends ICharacter {
-	public static int MY_LIFE = 1000;
+public class Rabit extends ICharacter {
+	public static int MY_LIFE = 50;
 
 	private Node[] waypoints;
 	public static Random rand = new Random();
@@ -43,8 +43,8 @@ public class Cow extends ICharacter {
 		}
 	};
 
-	public Cow(Node startupPosition, Node[] waypoints) {
-		super(startupPosition, nature, "Cow");
+	public Rabit(Node startupPosition, Node[] waypoints) {
+		super(startupPosition, nature, "Rabit");
 		this.waypoints = waypoints;
 		updatePosition();
 		journeyDone();
@@ -53,12 +53,12 @@ public class Cow extends ICharacter {
 
 	@Override
 	public float getRadius() {
-		return 5;
+		return 4;
 	}
 
 	@Override
 	public float getSpeed() {
-		return 0.2F;
+		return 2F;
 	}
 
 	@Override
@@ -67,17 +67,12 @@ public class Cow extends ICharacter {
 			return;
 		int x = (int) coord.x;
 		int y = (int) coord.y;
+		int radius = (int) getRadius();
 		g.setColor(Color.white);
-		g.fillPolygon(new int[] { x - (int) getRadius(), x - 2, x + 2, x + (int) getRadius() }, new int[] {
-				y - (int) getRadius(), y + (int) getRadius(), y + (int) getRadius(), y - (int) getRadius() }, 4);
-		g.setColor(Color.yellow);
-		g.fillRect(x - 2 + (int) getRadius(), (int) (y - getRadius() - 2), 2, 2);
-		g.fillRect((int) (x - getRadius()), (int) (y - getRadius() - 2), 2, 2);
+		g.fillRect(x - radius, y - 2, radius << 1, (radius - 2) << 1);
+		g.drawLine(x, y - radius, x + radius, y);
 		g.setColor(Color.black);
-		g.drawLine(x - (int) getRadius() + 2, y + 2 - (int) getRadius(), x - (int) getRadius() + 3, y + 2
-				- (int) getRadius());
-		g.drawLine(x + (int) getRadius() - 2, y + 2 - (int) getRadius(), x + (int) getRadius() - 3, y + 2
-				- (int) getRadius());
+		g.drawLine(x + radius - 1, y - 1, x + radius - 1, y - 1);
 	}
 
 	@Override

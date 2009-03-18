@@ -33,6 +33,13 @@ public abstract class ICharacter implements IMover {
 
 	protected ITeam team;
 	protected int life;
+
+	public int getLife() {
+		return life;
+	}
+
+	public abstract int getInitialLife();
+
 	protected String name;
 	protected boolean iAmDead = false;
 	private long lastShoot = System.nanoTime() + 2000000000;
@@ -111,40 +118,46 @@ public abstract class ICharacter implements IMover {
 
 	@Override
 	public boolean moveInItsDirection() {
-		if (node == destination) {
-			if (!journeyDone) {
-				journeyDone = true;
-				journeyDone();
-				// System.out.println(this.getName() + " is done");
+		try {
+			if (node == destination) {
+				if (!journeyDone) {
+					journeyDone = true;
+					journeyDone();
+					// System.out.println(this.getName() + " is done");
+				}
+				return true;
 			}
-			return true;
-		}
-		aStar.computPath(node, destination, this);
-		// System.out.println(node);
-		boolean directionDone = false;
-		Node n, np;
-		utils.LIFO_Pool.Iterator<Node> itPath = aStar.getPath(this);
-		direction = null;
-		np = itPath.next();
-		while (!directionDone && itPath.hasNext()) {
-			n = itPath.next();
-			// System.out.println(coord + " " + node + " " + n);
-			if (np != null) {
-				directionDone = true;
-				// System.out.println(direction + " " + n);
-				direction = n;
+			aStar.computPath(node, destination, this);
+			// System.out.println(node);
+			boolean directionDone = false;
+			Node n, np;
+			utils.LIFO_Pool.Iterator<Node> itPath = aStar.getPath(this);
+			direction = null;
+			np = itPath.next();
+			while (!directionDone && itPath.hasNext()) {
+				n = itPath.next();
+				// System.out.println(coord + " " + node + " " + n);
+				if (np != null) {
+					directionDone = true;
+					// System.out.println(direction + " " + n);
+					direction = n;
+				}
 			}
+			// System.out.println(destination+ " : " + direction + " from " +
+			// node);
+			if (direction == null)
+				return false;
+			Vector2d v = direction.subtract(coord);
+			float norme;
+			if ((norme = v.norme()) > getSpeed())
+				v.setScale(getSpeed() / norme, v);
+			coord.setSum(v, coord);
+			updatePosition();
+			return norme < getSpeed() / 10;
+		} finally {
+			if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 2e9)))
+				canShoot();
 		}
-		// System.out.println(destination+ " : " + direction + " from " + node);
-		if (direction == null)
-			return false;
-		Vector2d v = direction.subtract(coord);
-		float norme;
-		if ((norme = v.norme()) > getSpeed())
-			v.setScale(getSpeed() / norme, v);
-		coord.setSum(v, coord);
-		updatePosition();
-		return norme < getSpeed() / 10;
 	}
 
 	/**
@@ -160,57 +173,53 @@ public abstract class ICharacter implements IMover {
 	public void updatePosition() {
 		if (!nodesLocker.tryAcquire())
 			return;
-		try {
-			if (nodes.size() == 0) {
-				for (Node n : battleField.getWaypoint())
-					nodes.add(n);
-				node = null;
-			} else {
-				utils.LIFO.Iterator<Link> itN;
-				Node tmp;
-				for (Node n : nodes) {
-					itN = n.getNeighbor();
-					while (itN.hasNext()) {
-						tmp = itN.next().getNode();
-						if (!nodesBuffer.contains(tmp) && !nodes.contains(tmp))
-							nodesBuffer.add(tmp);
-					}
-				}
-				for (Node n : nodesBuffer)
-					nodes.add(n);
-				nodesBuffer.clear();
-			}
-			if (node == null)
-				node = nodes.getFirst();
-			float costTmp;
-			float cost = node.distance(coord);
+		if (nodes.size() == 0) {
+			for (Node n : battleField.getWaypoint())
+				nodes.add(n);
+			node = null;
+		} else {
+			utils.LIFO.Iterator<Link> itN;
+			Node tmp;
 			for (Node n : nodes) {
-				if ((costTmp = n.distance(coord)) < cost) {
-					node = n;
-					cost = costTmp;
-				}
-				if (costTmp > MAX_DST || !battleField.surface.canSee(coord, n)) {
-					nodesBuffer.add(n);
-					n.setInfluence(this, 0);
-				} else {
-					costTmp -= MAX_DST;
-					n.setInfluence(this, -costTmp);
+				itN = n.getNeighbor();
+				while (itN.hasNext()) {
+					tmp = itN.next().getNode();
+					if (!nodesBuffer.contains(tmp) && !nodes.contains(tmp))
+						nodesBuffer.add(tmp);
 				}
 			}
 			for (Node n : nodesBuffer)
-				nodes.remove(n);
+				nodes.add(n);
 			nodesBuffer.clear();
-			nodesLocker.release();
-		} finally {
-			if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 2e9)))
-				canShoot();
 		}
+		if (node == null)
+			node = nodes.getFirst();
+		float costTmp;
+		float cost = node.distance(coord);
+		for (Node n : nodes) {
+			if ((costTmp = n.distance(coord)) < cost) {
+				node = n;
+				cost = costTmp;
+			}
+			if (costTmp > MAX_DST || !battleField.surface.canSee(coord, n)) {
+				nodesBuffer.add(n);
+				n.setInfluence(this, 0);
+			} else {
+				costTmp -= MAX_DST;
+				n.setInfluence(this, -costTmp);
+			}
+		}
+		for (Node n : nodesBuffer)
+			nodes.remove(n);
+		nodesBuffer.clear();
+		nodesLocker.release();
 	}
 
 	protected abstract void canShoot();
 
 	protected void fire(Vector2d target) {
-		System.out.println(name + " tire vers\t" + (int) target.x + "\t" + (int) target.y);
+		// System.out.println(name + " tire vers\t" + (int) target.x + "\t" +
+		// (int) target.y);
 		if (!canShoot)
 			return;
 		canShoot = false;
@@ -226,5 +235,12 @@ public abstract class ICharacter implements IMover {
 	@Override
 	public boolean isDead() {
 		return iAmDead;
+	}
+
+	@Override
+	public void hit(int damage) {
+		iAmDead |= ((life -= damage) < 0);
+		if (iAmDead)
+			System.out.println(this.getName() + " is dead !");
 	}
 }

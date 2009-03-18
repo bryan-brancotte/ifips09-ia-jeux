@@ -69,7 +69,6 @@ public class LuaScriptLoader {
 					//System.out.println("un objet !!");
 					myResult.add(_myState.toJavaObject(i));
 				} catch (LuaException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}

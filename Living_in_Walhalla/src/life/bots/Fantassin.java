@@ -9,10 +9,11 @@ import utils.CodeExecutor;
 import aStar2D.Node;
 
 public class Fantassin extends ICharacter {
+	public static int MY_LIFE = 100;
 
 	public Fantassin(Node startupPosition, ITeam team, String name) {
 		super(startupPosition, team, name);
-		// TODO Auto-generated constructor stub
+		life = getInitialLife();
 	}
 
 	@Override
@@ -35,19 +36,13 @@ public class Fantassin extends ICharacter {
 
 	@Override
 	protected void journeyDone() {
-		// TODO Auto-generated method stub
+		// TODO fantassin journeyDone
 
 	}
 
 	@Override
 	public float getRadius() {
-		// TODO Auto-generated method stub
 		return 3;
-	}
-
-	@Override
-	public void hit(int damage) {
-		iAmDead |= ((life -= damage) < 0);
 	}
 
 	@Override
@@ -72,5 +67,10 @@ public class Fantassin extends ICharacter {
 			}
 
 		});
+	}
+
+	@Override
+	public int getInitialLife() {
+		return MY_LIFE;
 	}
 }
