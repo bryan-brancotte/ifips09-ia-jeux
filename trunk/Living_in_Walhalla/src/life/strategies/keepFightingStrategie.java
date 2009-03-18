@@ -1,8 +1,8 @@
-package life.bots;
+package life.strategies;
 
-import life.ICharacter;
 import life.IStrategie;
 import life.ITeam;
+import life.teams.FightingTeam;
 import utils.LIFO.Iterator;
 import aStar2D.Node;
 import aStar2D.Node.Link;
@@ -10,7 +10,7 @@ import applets.BattleField;
 
 public class keepFightingStrategie extends Thread implements IStrategie {
 	protected static boolean dontKillMe = true;
-	protected static final int TIME_REEVAL_SITUATION = 4000;
+	protected static final int TIME_REEVAL_SITUATION = 10000;
 
 	protected BattleField battleField;
 	protected FightingTeam myTeam;
@@ -39,9 +39,10 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 				while (myTeam == null)
 					Thread.currentThread().suspend();
 
-				if (myTeam.players.size() != 0) {
-					if (targets.length != myTeam.players.size()) {
-						targets = new NodeTarget[myTeam.players.size()];
+				myTeam.newOrders();
+				if (myTeam.getCountFighter() != 0) {
+					if (targets.length != myTeam.getCountFighter()) {
+						targets = new NodeTarget[myTeam.getCountFighter()];
 						for (cpt = 0; cpt < targets.length; cpt++)
 							targets[cpt] = new NodeTarget();
 					} else {
@@ -49,7 +50,7 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 							targets[cpt].cost = Integer.MIN_VALUE;
 					}
 					for (Node n : battleField.getWaypoint()) {
-						tmp = heuristique(n);
+						tmp = heuristiqueSuicide(n);
 						cpt = targets.length;
 						while (cpt > 0 && targets[cpt - 1].cost < tmp) {
 							cpt--;
@@ -70,30 +71,53 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 					cpt = 0;
 					System.out.println("Target for " + myTeam.getName() + " :\t" + targets[0].n + " with "
 							+ targets[0].cost + "\twhois " + targets[0].n.getOverCost(myTeam));
-					for (ICharacter c : myTeam.players) {
-						c.setDestination(targets[cpt++].n);
+					for (NodeTarget nt : targets) {
+						myTeam.attack(nt.n, 1);
 					}
-					// this.suspend();
+					Thread.sleep(TIME_REEVAL_SITUATION);
+				} else {
+					Thread.sleep(100);
 				}
-				Thread.sleep(TIME_REEVAL_SITUATION);
 			} catch (InterruptedException e) {
 			}
 		}
 	}
 
-	private int heuristique(Node centralNode) {
+	/**
+	 * heuristique sensé donner les bonne embuscade
+	 * 
+	 * @param centralNode
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private int heuristiqueGoodSpot(Node centralNode) {
 		float ret = 0;
 		float overCost = centralNode.getOverCost(myTeam);
 		int cpt = 0;
 		// ret *= -ret;
-//		if (ret > 0)
-//			return 0;
+		// if (ret > 0)
+		// return 0;
 		Iterator<Link> it = centralNode.getNeighbor();
 		while (it.hasNext()) {
 			ret += it.next().getNode().getOverCost(myTeam) - overCost;
 			cpt++;
 		}
-		return (int) ret / cpt;
+		return (int) ret * cpt;
+	}
+
+	/**
+	 * heuristique qui mène au coeur du dangé
+	 * 
+	 * @param centralNode
+	 * @return
+	 */
+	private int heuristiqueSuicide(Node centralNode) {
+		float ret = centralNode.getOverCost(myTeam);
+		Iterator<Link> it = centralNode.getNeighbor();
+		while (it.hasNext()) {
+			ret += it.next().getNode().getOverCost(myTeam);
+		}
+		return (int) ret;
 	}
 
 	public void askToStop() {

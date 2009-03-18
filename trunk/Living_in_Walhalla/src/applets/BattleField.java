@@ -9,6 +9,7 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.ConcurrentModificationException;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -18,13 +19,14 @@ import life.IMover;
 import life.ITeam;
 import life.bots.Cow;
 import life.bots.Fantassin;
-import life.bots.FightingTeam;
 import life.bots.Personnage;
 import life.bots.Rabit;
-import life.bots.keepFightingStrategie;
 import life.mover.MoverManager;
 import life.munition.Bullet;
 import life.munition.IBullet;
+import life.strategies.OnAtATimeStrategie;
+import life.strategies.keepFightingStrategie;
+import life.teams.FightingTeam;
 import surface.Surface;
 import utils.CodeExecutor;
 import utils.Vector2d;
@@ -198,7 +200,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to init all your bots.
 	 */
 	public void initBots() {
-		teamBlue = new FightingTeam("Blue", Color.blue, new keepFightingStrategie(this));
+		teamBlue = new FightingTeam("Blue", Color.blue, new OnAtATimeStrategie(this));
 		teamRed = new FightingTeam("Red", Color.red, new keepFightingStrategie(this));
 		moverToDraw = new LinkedList<IMover>();
 		bulletToDraw = new LinkedList<IMover>();
@@ -206,7 +208,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		ICharacter ic;
 		ICharacter.init(this, aStar);
 
-		moverManager = new MoverManager(35, 10);
+		moverManager = new MoverManager(30, 10);
 		moverManager.start();
 
 		perso = new Personnage("Florence", teamRed);
@@ -229,7 +231,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			teamBlue.registerPlayer(ic);
 		}
 
-		for (int i = 0; i < 3; i++) {
+		for (int i = 0; i < 1; i++) {
 			moverManager.addMovers(im = new Cow(waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
@@ -450,6 +452,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 				break;
 			case 2:
 				PathDrawing(moverToDraw.get(3));
+				PathDrawing(moverToDraw.get(4));
 				break;
 			default:
 				for (IMover im : moverToDraw)
@@ -465,8 +468,12 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 
 		// Draw the bots in their position/direction
 		try {
-			moverToDrawLocker.tryAcquire(100, TimeUnit.MILLISECONDS);
 			IMover moverDead = null;
+			// if (
+			moverToDrawLocker.tryAcquire(100, TimeUnit.MILLISECONDS)
+			// ) {
+			// moverToDrawLocker.acquireUninterruptibly()
+			;
 			for (IMover im : moverToDraw) {
 				if (im.isDead())
 					moverDead = im;
@@ -479,18 +486,22 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 				moverDead = null;
 			}
 			moverToDrawLocker.release();
-			bulletToDrawLocker.tryAcquire(100, TimeUnit.MILLISECONDS);
-			for (IMover im : bulletToDraw) {
-				if (im.isDead())
-					moverDead = im;
-				else
-					im.draw(buffer_canvas);
+			// }
+			if (bulletToDrawLocker.tryAcquire(100, TimeUnit.MILLISECONDS)) {
+				// bulletToDrawLocker.acquireUninterruptibly()
+				;
+				for (IMover im : bulletToDraw) {
+					if (im.isDead())
+						moverDead = im;
+					else
+						im.draw(buffer_canvas);
+				}
+				if (moverDead != null) {
+					bulletToDraw.remove(moverDead);
+					moverDead = null;
+				}
+				bulletToDrawLocker.release();
 			}
-			if (moverDead != null) {
-				bulletToDraw.remove(moverDead);
-				moverDead = null;
-			}
-			bulletToDrawLocker.release();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -506,7 +517,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		utils.LIFO_Pool.Iterator<Node> itPath = aStar.getPath(perso);
 		Node n, np;
 		boolean directionDone = comportement == BattleFieldBehavior.MOVER;
-		buffer_canvas.setColor(perso.getColor().darker().darker().darker() );
+		buffer_canvas.setColor(perso.getColor().darker().darker().darker());
 		np = itPath.next();
 		while (itPath.hasNext()) {
 			n = itPath.next();
@@ -598,19 +609,11 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 				}
 				moverToDrawLocker.release();
 			}
-			if (codeEx.keepIterat()) {
-				if (bulletToDrawLocker.tryAcquire(100, TimeUnit.MILLISECONDS)) {
-					for (IMover im : bulletToDraw) {
-						codeEx.execute(im);
-						if (!codeEx.keepIterat()) {
-							break;
-						}
-					}
-					bulletToDrawLocker.release();
-				}
-			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+		} catch (ConcurrentModificationException e) {
+			e.printStackTrace();
+			System.err.println("Problem on iterating movers");
 		}
 	}
 
@@ -627,6 +630,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	}
 
 	public void addMover(IBullet mover) {
+		if (started != null)
+			return;
 		try {
 			if (bulletToDrawLocker.tryAcquire(100, TimeUnit.MILLISECONDS)) {
 				moverManager.addMovers(mover);
