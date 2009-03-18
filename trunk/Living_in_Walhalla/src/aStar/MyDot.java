@@ -21,7 +21,6 @@ public class MyDot implements Dot {
 
 	@Override
 	public float getY() {
-		// TODO Auto-generated method stub
 		return y;
 	}
 

@@ -31,7 +31,6 @@ public class MoverManager {
 		MoverThread m;
 		this.moverThreads = new LinkedList<MoverThread>();
 		this.bulletThreads = new LinkedList<MoverThread>();
-		// TODO faire un groupe de thread pour les balles et non un seul thread
 		for (int i = 2; i < nbThread; i++) {
 			moverThreads.add(m = new MoverThread(timeStep, MOVERS));
 			m.start();
