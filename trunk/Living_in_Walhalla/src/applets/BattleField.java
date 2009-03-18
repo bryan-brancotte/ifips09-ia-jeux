@@ -21,6 +21,7 @@ import life.bots.Fantassin;
 import life.bots.FightingTeam;
 import life.bots.Personnage;
 import life.bots.Rabit;
+import life.bots.keepFightingStrategie;
 import life.mover.MoverManager;
 import life.munition.Bullet;
 import life.munition.IBullet;
@@ -197,8 +198,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 * Called ones to init all your bots.
 	 */
 	public void initBots() {
-		teamBlue = new FightingTeam("Blue", Color.blue);
-		teamRed = new FightingTeam("Red", Color.red);
+		teamBlue = new FightingTeam("Blue", Color.blue,new keepFightingStrategie(this));
+		teamRed = new FightingTeam("Red", Color.red,new keepFightingStrategie(this));
 		moverToDraw = new LinkedList<IMover>();
 		bulletToDraw = new LinkedList<IMover>();
 		IMover im;

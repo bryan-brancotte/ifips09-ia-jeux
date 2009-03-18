@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 
 import life.ICharacter;
+import life.IStrategie;
 import life.ITeam;
 
 public class FightingTeam implements ITeam {
@@ -12,12 +13,14 @@ public class FightingTeam implements ITeam {
 	private String name;
 	private Color color;
 	protected ArrayList<ICharacter> players;
+	protected IStrategie strategie;
 
-	public FightingTeam(String name, Color color) {
+	public FightingTeam(String name, Color color, IStrategie strategie) {
 		super();
 		this.name = name;
 		this.color = color;
 		this.players = new ArrayList<ICharacter>(8);
+		strategie.worksFor(this);
 	}
 
 	@Override
