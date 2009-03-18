@@ -457,6 +457,16 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			moverToDraw.remove(moverDead);
 			moverDead = null;
 		}
+		for (IMover im : bulletToDraw) {
+			if (im.isDead())
+				moverDead = im;
+			else
+				im.draw(buffer_canvas);
+		}
+		if (moverDead != null) {
+			bulletToDraw.remove(moverDead);
+			moverDead = null;
+		}
 
 		drawHUD();
 		showbuffer();
