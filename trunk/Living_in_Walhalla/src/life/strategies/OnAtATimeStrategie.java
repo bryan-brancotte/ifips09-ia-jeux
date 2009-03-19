@@ -45,6 +45,10 @@ public class OnAtATimeStrategie extends Thread implements IStrategie {
 						public boolean keepIterat() {
 							return false;
 						}
+
+						@Override
+						public void endingExecution() {
+						}
 					});
 				}
 				if (target != null)

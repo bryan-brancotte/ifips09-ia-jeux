@@ -10,7 +10,7 @@ import applets.BattleField;
 
 public class keepFightingStrategie extends Thread implements IStrategie {
 	protected static boolean dontKillMe = true;
-	protected static final int TIME_REEVAL_SITUATION = 10000;
+	protected static final int TIME_REEVAL_SITUATION = 6000;
 
 	protected BattleField battleField;
 	protected FightingTeam myTeam;

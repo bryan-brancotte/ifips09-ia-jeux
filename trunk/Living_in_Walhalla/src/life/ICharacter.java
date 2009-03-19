@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.concurrent.Semaphore;
 
-import life.munition.Bullet;
+import life.munition.IBullet;
 import utils.Vector2d;
 import aStar2D.AStarMultiThread;
 import aStar2D.Node;
@@ -43,7 +43,7 @@ public abstract class ICharacter implements IMover {
 
 	protected String name;
 	protected boolean iAmDead = false;
-	private long lastShoot = System.nanoTime() + 2000000000;
+	private long nextPossibleShoot = System.nanoTime() + 2000000000;
 	private boolean canShoot = true;
 
 	public ITeam getTeam() {
@@ -156,7 +156,7 @@ public abstract class ICharacter implements IMover {
 			updatePosition();
 			return norme < getSpeed() / 10;
 		} finally {
-			if (canShoot || (canShoot = (System.nanoTime() - lastShoot > 1e9)))
+			if (canShoot || (canShoot = (System.nanoTime() - nextPossibleShoot > 0)))
 				canShoot();
 		}
 	}
@@ -218,14 +218,14 @@ public abstract class ICharacter implements IMover {
 
 	protected abstract void canShoot();
 
-	protected void fire(Vector2d target) {
+	protected void fire(IBullet munition) {
 		// System.out.println(name + " tire vers\t" + (int) target.x + "\t" +
 		// (int) target.y);
 		if (!canShoot)
 			return;
 		canShoot = false;
-		lastShoot = System.nanoTime();
-		battleField.addMover(new Bullet(5, coord, target));
+		nextPossibleShoot = System.nanoTime() + munition.reloadingTime();
+		battleField.addMover(munition);// new Bullet(5, coord, target));
 	}
 
 	@Override
