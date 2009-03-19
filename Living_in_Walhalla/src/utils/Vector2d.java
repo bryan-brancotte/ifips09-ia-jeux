@@ -86,7 +86,8 @@ public class Vector2d {
 	 * @return
 	 */
 	public float distanceCarre(Vector2d that) {
-		return (x - that.x) * (x - that.x) + (y * that.y) * (y * that.y);
+//		return (x - that.x) * (x - that.x) + (y * that.y) * (y * that.y);
+		return distance(that);
 	}
 
 	public float norme() {

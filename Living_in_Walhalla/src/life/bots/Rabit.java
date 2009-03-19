@@ -8,7 +8,7 @@ import life.ICharacter;
 import aStar2D.Node;
 
 public class Rabit extends ICharacter {
-	public static int MY_LIFE = 50;
+	public static int MY_LIFE = 11;
 
 	private Node[] waypoints;
 	public static Random rand = new Random();

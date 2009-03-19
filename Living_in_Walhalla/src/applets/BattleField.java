@@ -21,9 +21,11 @@ import life.bots.Cow;
 import life.bots.Fantassin;
 import life.bots.Personnage;
 import life.bots.Rabit;
+import life.bots.Tank;
 import life.mover.MoverManager;
 import life.munition.Bullet;
 import life.munition.IBullet;
+import life.munition.Obus;
 import life.strategies.OnAtATimeStrategie;
 import life.strategies.keepFightingStrategie;
 import life.teams.FightingTeam;
@@ -190,6 +192,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	 */
 	public void initBelettes() {
 		Bullet.init(this);
+		Obus.init(this);
 		// addMoverUnsafe(new Bullet(5, new Vector2d(5, 5), new Vector2d(5,
 		// 400)));
 		// addMoverUnsafe(new Bullet(5, new Vector2d(5, 300), new Vector2d(5,
@@ -224,6 +227,15 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			moverManager.addMovers(ic);
 			moverToDraw.add(ic);
 			teamRed.registerPlayer(ic);
+		}
+		for (int i = 1; i <= (TAILLE_TEAM >> 2); i++) {
+			ic = new Tank(new Node(viewer_xsize - 10 * (TAILLE_TEAM - i + 1), viewer_ysize - 10 * i), teamBlue,
+					"Bryan_" + i);
+			moverManager.addMovers(ic);
+			moverToDraw.add(ic);
+			teamBlue.registerPlayer(ic);
+		}
+		for (int i = (TAILLE_TEAM >> 1)+1; i <= TAILLE_TEAM; i++) {
 			ic = new Fantassin(new Node(viewer_xsize - 10 * (TAILLE_TEAM - i + 1), viewer_ysize - 10 * i), teamBlue,
 					"Bryan_" + i);
 			moverManager.addMovers(ic);
@@ -236,7 +248,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			moverToDraw.add(im);
 		}
 
-		for (int i = 0; i < TAILLE_TEAM; i++) {
+		for (int i = 0; i < TAILLE_TEAM || i < 6; i++) {
 			moverManager.addMovers(im = new Rabit(waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
@@ -607,6 +619,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 						break;
 					}
 				}
+				codeEx.endingExecution();
 				moverToDrawLocker.release();
 			}
 		} catch (InterruptedException e) {

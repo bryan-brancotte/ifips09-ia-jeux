@@ -14,5 +14,9 @@ public interface CodeExecutor<T> {
 	/**
 	 * La fonction englobant le code a exécuter ultérieurement
 	 */
+	public void endingExecution();
+	/**
+	 * La fonction englobant le code a exécuter ultérieurement
+	 */
 	public boolean keepIterat();
 }

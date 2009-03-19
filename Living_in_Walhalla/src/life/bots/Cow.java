@@ -12,7 +12,7 @@ import life.ITeam;
 import aStar2D.Node;
 
 public class Cow extends ICharacter {
-	public static int MY_LIFE = 1000;
+	public static int MY_LIFE = 300;
 
 	private Node[] waypoints;
 	public static Random rand = new Random();

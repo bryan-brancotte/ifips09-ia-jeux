@@ -10,29 +10,25 @@ import utils.Vector2d;
 import aStar2D.Node;
 import applets.BattleField;
 
-public class Bullet implements IBullet {
+public class Obus implements IBullet {
 
 	private Vector2d vectSpeed;
 	private Vector2d coord;
 	private Vector2d tmp;
 	private boolean iAmDead = false;
-	private int damage = 10;
-	private Bullet me = this;
+	private int damage = 50;
+	private Obus me = this;
 
 	protected static BattleField battleField;
 
 	public static void init(BattleField battleField) {
-		Bullet.battleField = battleField;
+		Obus.battleField = battleField;
 	}
 
-	public Bullet(Vector2d startupPosition, Vector2d target) {
-		this(startupPosition, target, 0);
-	}
-
-	public Bullet(Vector2d startupPosition, Vector2d target, float avancementInitial) {
+	public Obus(Vector2d startupPosition, Vector2d target, float avancementInitial) {
 		super();
 		this.vectSpeed = target.subtract(startupPosition);
-		vectSpeed.setScale(5 / startupPosition.distance(target), vectSpeed);
+		vectSpeed.setScale(1.2F / startupPosition.distance(target), vectSpeed);
 		coord = new Vector2d(startupPosition.x, startupPosition.y);
 		if (avancementInitial > 0)
 			for (int i = (int) (avancementInitial + getRadius()); i > 0; i--)
@@ -80,6 +76,8 @@ public class Bullet implements IBullet {
 
 			@Override
 			public void endingExecution() {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 		return true;
@@ -87,7 +85,7 @@ public class Bullet implements IBullet {
 
 	@Override
 	public float getRadius() {
-		return 1F;
+		return 3F;
 	}
 
 	@Override
@@ -112,6 +110,6 @@ public class Bullet implements IBullet {
 
 	@Override
 	public long reloadingTime() {
-		return (long) 8e8F;
+		return (long) 3e9F;
 	}
 }
