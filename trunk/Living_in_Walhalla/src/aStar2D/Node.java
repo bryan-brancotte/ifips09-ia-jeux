@@ -153,9 +153,10 @@ public class Node extends Vector2d {
 
 	public float getOverCost(IMover forWho) {
 		float oc = 0F;
+		float oc2 = 0F;
 		influentialsLocker.acquireUninterruptibly();
 		for (Entry<IMover, Float> e : influentials.entrySet()) {
-			// oc2 += lua.LuaFunctionManager.determineOverCost(forWho, e);
+		//	 oc2 += lua.LuaFunctionManager.determineOverCost(forWho, e);
 			if (e.getKey().getTeam().isOpposedTo(forWho.getTeam()))
 				oc += e.getValue();
 			else if (forWho != e.getKey())

@@ -32,6 +32,8 @@ public class OnAtATimeStrategie extends Thread implements IStrategie {
 				while (myTeam == null)
 					Thread.currentThread().suspend();
 
+				myTeam.newOrders();
+				
 				if (target == null || target.isDead()) {
 					battleField.iterateOnMoverToDraw(new CodeExecutor<IMover>() {
 

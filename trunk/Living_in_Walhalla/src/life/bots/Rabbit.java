@@ -7,13 +7,13 @@ import java.util.Random;
 import life.ICharacter;
 import aStar2D.Node;
 
-public class Rabit extends ICharacter {
+public class Rabbit extends ICharacter {
 	public static int MY_LIFE = 11;
 
 	private Node[] waypoints;
 	public static Random rand = new Random();
 
-	public Rabit(Node startupPosition, Node[] waypoints) {
+	public Rabbit(Node startupPosition, Node[] waypoints) {
 		super(startupPosition, Cow.nature, "Rabit");
 		this.waypoints = waypoints;
 		updatePosition();
