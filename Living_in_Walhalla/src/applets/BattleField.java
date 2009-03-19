@@ -5,7 +5,9 @@ import java.awt.Color;
 import java.awt.Event;
 import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -20,7 +22,7 @@ import life.ITeam;
 import life.bots.Cow;
 import life.bots.Fantassin;
 import life.bots.Personnage;
-import life.bots.Rabit;
+import life.bots.Rabbit;
 import life.bots.Tank;
 import life.mover.MoverManager;
 import life.munition.Bullet;
@@ -68,9 +70,9 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// size in pixels (in x, the y is automatically deduced)
 	private static final long serialVersionUID = 1L;
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
-	protected final int DRAW_PATH = 0;
+	protected final int DRAW_PATH = 2;
 	protected final boolean DRAW_WAYPOINT = false;
-	protected final boolean DRAW_CONTROL_MAP = false;
+	protected final boolean DRAW_CONTROL_MAP = true;
 	protected final boolean LEVEL_CREATING = false;
 	public final int TAILLE_TEAM = 8;
 	protected int levelCreatingCpt = 0;
@@ -166,9 +168,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		resize(viewer_xsize, viewer_ysize);
 		buffer_canvasimage = createImage(viewer_xsize, viewer_ysize);
 		buffer_canvas = buffer_canvasimage.getGraphics();
-		// ((Graphics2D)
-		// buffer_canvas).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		// RenderingHints.VALUE_ANTIALIAS_ON);
+		((Graphics2D) buffer_canvas).setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
 		viewer_canvas = this.getGraphics();
 
 		addMouseListener(this);
@@ -228,14 +229,14 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			moverToDraw.add(ic);
 			teamRed.registerPlayer(ic);
 		}
-		for (int i = 1; i <= (TAILLE_TEAM >> 2); i++) {
-			ic = new Tank(new Node(viewer_xsize - 10 * (TAILLE_TEAM - i + 1), viewer_ysize - 10 * i), teamBlue,
-					"Bryan_" + i);
-			moverManager.addMovers(ic);
-			moverToDraw.add(ic);
-			teamBlue.registerPlayer(ic);
-		}
-		for (int i = (TAILLE_TEAM >> 1)+1; i <= TAILLE_TEAM; i++) {
+		// for (int i = 1; i <= (TAILLE_TEAM >> 2); i++) {
+		ic = new Tank(new Node(viewer_xsize - 10 * (TAILLE_TEAM - TAILLE_TEAM + 1), viewer_ysize - 10 * TAILLE_TEAM),
+				teamBlue, "Bryan_" + TAILLE_TEAM);
+		moverManager.addMovers(ic);
+		moverToDraw.add(ic);
+		teamBlue.registerPlayer(ic);
+		// }
+		for (int i = 2 + 1; i <= TAILLE_TEAM; i++) {
 			ic = new Fantassin(new Node(viewer_xsize - 10 * (TAILLE_TEAM - i + 1), viewer_ysize - 10 * i), teamBlue,
 					"Bryan_" + i);
 			moverManager.addMovers(ic);
@@ -248,8 +249,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 			moverToDraw.add(im);
 		}
 
-		for (int i = 0; i < TAILLE_TEAM || i < 6; i++) {
-			moverManager.addMovers(im = new Rabit(waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
+		for (int i = 0; i < TAILLE_TEAM || i < 20; i++) {
+			moverManager.addMovers(im = new Rabbit(waypoints[Cow.rand.nextInt(waypoints.length)], waypoints));
 			moverToDraw.add(im);
 		}
 		moverToDrawLocker.release();
@@ -463,8 +464,14 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 				PathDrawing(perso2);
 				break;
 			case 2:
-				PathDrawing(moverToDraw.get(3));
-				PathDrawing(moverToDraw.get(4));
+				if (3 >= moverToDraw.size())
+					PathDrawing(moverToDraw.getLast());
+				else
+					PathDrawing(moverToDraw.get(3));
+				if (3 + TAILLE_TEAM >= moverToDraw.size())
+					PathDrawing(moverToDraw.getLast());
+				else
+					PathDrawing(moverToDraw.get(3 + TAILLE_TEAM));
 				break;
 			default:
 				for (IMover im : moverToDraw)
@@ -529,7 +536,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 		utils.LIFO_Pool.Iterator<Node> itPath = aStar.getPath(perso);
 		Node n, np;
 		boolean directionDone = comportement == BattleFieldBehavior.MOVER;
-		buffer_canvas.setColor(perso.getColor().darker().darker().darker());
+		buffer_canvas.setColor(perso.getColor().darker().darker());
 		np = itPath.next();
 		while (itPath.hasNext()) {
 			n = itPath.next();
@@ -593,6 +600,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	public void start() {
 		if (update == null) {
 			update = new Thread(this);
+			update.setPriority(Thread.MAX_PRIORITY);
 			update.start();
 		}
 	}

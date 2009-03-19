@@ -61,10 +61,19 @@ public class FightingTeam implements ITeam {
 		g.setColor(Color.black);
 		g.drawRect(x, y, players.size() * 6 + 2, heigth);
 		g.setColor(color);
+		float h;
 		x -= 4;
 		++y;
-		for (ICharacter c : players)
-			g.fillRect(x += 6, y + 1, 5, (int) ((float) c.getLife() / c.getInitialLife() * heigth - 3));
+		for (ICharacter c : players) {
+			h = (float) c.getLife() / c.getInitialLife() * heigth;
+//			if (h > 3)
+				g.fillRect(x += 6, y + 1, 5, (int) h - 3);
+//			else {
+//				g.setColor(Color.white);
+//				g.fillRect(x += 6, y + 1, 5, (int) (h * heigth) - 3);
+//				g.setColor(color);
+//			}
+		}
 		return players.size() * 6 + 2;
 	}
 
@@ -94,7 +103,8 @@ public class FightingTeam implements ITeam {
 			if (shooter != c
 					&& (c.getRadius() * c.getRadius() * 2 < c.getCoord().distanceCarre(dest)
 							+ c.getCoord().distanceCarre(shooter.getCoord()) - dstCarre)) {
-//				System.out.println("Friendly fire avoided from " + shooter + " to " + c);
+				// System.out.println("Friendly fire avoided from " + shooter +
+				// " to " + c);
 				return false;
 			}
 		return true;

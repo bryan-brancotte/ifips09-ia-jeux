@@ -1,5 +1,6 @@
 package life.bots;
 
+import java.awt.Color;
 import java.awt.Graphics;
 
 import life.ICharacter;
@@ -22,13 +23,16 @@ public class Tank extends ICharacter {
 	public void drawCharacter(Graphics g) {
 		int x = (int) coord.x;
 		int y = (int) coord.y;
+		int radius = (int) getRadius();
 		g.setColor(team.getColor());
-		g.drawLine((int) (x - getRadius()), (int) (y - getRadius()), (int) (x + getRadius()), (int) (y + getRadius()));
-		g.drawLine((int) (x + 1 - getRadius()), (int) (y - getRadius()), (int) (x - 1 + getRadius()),
-				(int) (y + getRadius()));
-		g.drawLine((int) (x - getRadius()), (int) (y + getRadius()), (int) (x + getRadius()), (int) (y - getRadius()));
-		g.drawLine((int) (x + 1 - getRadius()), (int) (y + getRadius()), (int) (x - 1 + getRadius()),
-				(int) (y - getRadius()));
+		g.fillRect(x - radius, y - (radius >> 1), radius << 1, radius >> 1);
+		g.fillPolygon(new int[] { x - (radius >> 1) - (radius >> 2) - 2, x - (radius >> 1), x + (radius >> 1),
+				x + (radius >> 1) + (radius >> 2) + 1 }, new int[] { y - (radius >> 1), y - radius, y - radius,
+				y - (radius >> 1) }, 4);
+		g.drawLine(x, y - (radius >> 1) - (radius >> 2), x + radius, y - (radius >> 1) - (radius >> 2));
+		g.setColor(Color.black);
+		g.drawLine(x - (radius >> 1) - (radius >> 2), y, x - (radius >> 2), y);
+		g.drawLine(x + (radius >> 1) + (radius >> 2) - 1, y, x - 1 + (radius >> 2), y);
 	}
 
 	@Override

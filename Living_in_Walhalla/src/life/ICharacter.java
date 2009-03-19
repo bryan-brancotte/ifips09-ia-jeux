@@ -241,8 +241,11 @@ public abstract class ICharacter implements IMover {
 	@Override
 	public void hit(int damage) {
 		iAmDead |= ((life -= damage) < 0);
-		if (iAmDead)
+		if (iAmDead) {
 			System.out.println(this.getName() + " is dead !");
+			for (Node n : nodes)
+				n.setInfluence(this, 0);
+		}
 	}
 
 	@Override

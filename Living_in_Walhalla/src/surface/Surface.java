@@ -307,7 +307,7 @@ public class Surface {
 		ob.addNode(new Vector2d(624F, 200F));
 		ob.fixObject();
 		objects.add(ob);
-		
+
 		ob = new PolylineObject(this);
 		ob.addNode(new Vector2d(300F, 300F));
 		ob.addNode(new Vector2d(400F, 200F));

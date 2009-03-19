@@ -50,7 +50,7 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 							targets[cpt].cost = Integer.MIN_VALUE;
 					}
 					for (Node n : battleField.getWaypoint()) {
-						tmp = heuristiqueSuicide(n);
+						tmp = heuristiqueGoodSpot(n);
 						cpt = targets.length;
 						while (cpt > 0 && targets[cpt - 1].cost < tmp) {
 							cpt--;
@@ -74,7 +74,7 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 					// + targets[0].cost + "\twhois " +
 					// targets[0].n.getOverCost(myTeam));
 					for (NodeTarget nt : targets) {
-						myTeam.attack(nt.n, 1);
+						myTeam.attack(nt.n, 2);
 					}
 					Thread.sleep(TIME_REEVAL_SITUATION);
 				} else {
@@ -91,20 +91,19 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 	 * @param centralNode
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	private int heuristiqueGoodSpot(Node centralNode) {
 		float ret = 0;
 		float overCost = centralNode.getOverCost(myTeam);
 		int cpt = 0;
 		// ret *= -ret;
-		// if (ret > 0)
-		// return 0;
+		if (overCost > 0)
+			return 0;
 		Iterator<Link> it = centralNode.getNeighbor();
 		while (it.hasNext()) {
-			ret += it.next().getNode().getOverCost(myTeam) - overCost;
+			ret += it.next().getNode().getOverCost(myTeam);
 			cpt++;
 		}
-		return (int) ret * cpt;
+		return (int) ret / cpt;
 	}
 
 	/**
