@@ -51,7 +51,7 @@ public class Tank extends ICharacter {
 
 			private boolean keepIterat = true;
 			private IMover target = null;
-			private float dstCarre;
+			private float dst;
 			private float tmp;
 
 			@Override
@@ -60,9 +60,9 @@ public class Tank extends ICharacter {
 				if (param.getTeam() != null && param.getTeam().isOpposedTo(me.getTeam())
 						&& battleField.surface.canSee(param.getCoord(), me.getCoord())
 						&& team.isNotFriendlyFire(me, param.getCoord())) {
-					tmp = me.getCoord().distanceCarre(param.getCoord());
-					if (target == null || tmp < dstCarre) {
-						dstCarre = tmp;
+					tmp = me.getCoord().distance(param.getCoord());
+					if (target == null || tmp < dst) {
+						dst = tmp;
 						target = param;
 					}
 				}
@@ -76,8 +76,7 @@ public class Tank extends ICharacter {
 			@Override
 			public void endingExecution() {
 				if (target != null) {
-					System.out.println(dstCarre);
-					if (dstCarre < 300)
+					if (dst < 300)
 						fire(new Obus(me.getCoord(), target.getCoord(), me.getRadius()));
 					else
 						fire(new Bullet(me.getCoord(), target.getCoord(), me.getRadius()));
