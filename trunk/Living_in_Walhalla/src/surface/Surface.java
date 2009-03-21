@@ -44,9 +44,9 @@ public class Surface {
 		this.wxsize = wxsize;
 		this.wysize = wysize;
 		objects = new Vector<PolylineObject>();
-		 lab();
+		lab();
 		// firstSurface();
-//		rectangle();
+		// rectangle();
 		PolylineObject ob;
 
 		ob = new PolylineObject(this);
