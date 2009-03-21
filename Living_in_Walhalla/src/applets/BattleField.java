@@ -70,9 +70,9 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	// size in pixels (in x, the y is automatically deduced)
 	private static final long serialVersionUID = 1L;
 	protected BattleFieldBehavior comportement = BattleFieldBehavior.MOVER;
-	protected final int DRAW_PATH = 2;
+	protected final int DRAW_PATH = 0;
 	protected final boolean DRAW_WAYPOINT = false;
-	protected final boolean DRAW_CONTROL_MAP = true;
+	protected final boolean DRAW_CONTROL_MAP = false;
 	protected final boolean LEVEL_CREATING = false;
 	public final int TAILLE_TEAM = 8;
 	protected int levelCreatingCpt = 0;
