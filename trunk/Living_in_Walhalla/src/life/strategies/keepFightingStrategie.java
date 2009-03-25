@@ -112,6 +112,7 @@ public class keepFightingStrategie extends Thread implements IStrategie {
 	 * @param centralNode
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	private int heuristiqueSuicide(Node centralNode) {
 		float ret = centralNode.getOverCost(myTeam);
 		Iterator<Link> it = centralNode.getNeighbor();
